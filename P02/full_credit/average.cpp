@@ -4,9 +4,9 @@ Average::Average() : _sum{0}, _values{0} { }
 
 std::ostream& operator<<(std::ostream& ost, Average& average){
   if(average._values == 0){
-    ost << "undefined" << std::endl;
+    ost << "undefined";
   } else {
-    ost << (average._sum/average._values) << std::endl;
+    ost << (average._sum/average._values);
   }
   return ost;
 }
