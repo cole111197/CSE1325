@@ -23,7 +23,6 @@ int main(){
     if(input == 1){
       std::cout << "Value?" << std::endl;
       std::cin >> avg;
-      std::cout << avg << std::endl;
     } else if(input == 2){
       avg += (100*((double)rand() / (double)RAND_MAX));
     } else if(input == 9){
