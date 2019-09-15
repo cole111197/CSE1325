@@ -4,6 +4,7 @@
 #include <ctime>
 #include <map>
 #include <string>
+#include <iterator>
 
 int main(){
   std::map<std::string, Average> students;
@@ -38,12 +39,24 @@ int main(){
       students.insert(std::pair<std::string, Average>(temp, Average()));
       name = temp;
     } else if(input == 6){
+      std::cout << "Current students:" << std::endl;
+      
+      std::map<std::string, Average>::iterator it;
+      for ( it = students.begin(); it != students.end(); it++ )
+      {
+        std::cout << it->first << std::endl;
+      }
+      std::string tname;
       std::cout << "Name?" << std::endl;
-      std::cin >> name;
+      std::cin >> tname;
+      if (students.find(tname) == students.end()){
+        std::cout << "Invalid input" << std::endl;
+      } else {
+        name = tname;
+      }
     } else if(input != 0){
       std::cout << "Invalid input" << std::endl;
     }
   } while(input != 0);
-
   return 0;
 }
