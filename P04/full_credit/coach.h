@@ -1,7 +1,8 @@
 #ifndef __COACH_H
 #define __COACH_H
+#include "stock.h"
 
-class Coach{
+class Coach: public Stock{
     private:
         int _passengers;
     public:
