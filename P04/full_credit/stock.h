@@ -4,13 +4,14 @@
 #include <vector>
 
 class Stock{
+    protected:
+        std::vector<std::string> _art;
     private:
         double _weight;
-        std::vector<std::string> _art;
     public:
-        virtual double weight();
         Stock();
         Stock(double weight);
+        virtual double weight();
         std::string ascii_art(int row);
 };
 
