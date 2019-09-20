@@ -12,9 +12,9 @@ int main(){
     int command;
     std::string prompt = "Command?";
     while(command != 0){
-        std::cout << "=================\nTITLE HERE\n=================\n\n\n";
+        std::cout << "=================\nTITLE HERE\n=================\n\n";
         std::cout << train.to_art();
-        std::cout << "##########################################################\n\n";
+        std::cout << "#########################################################################\n";
         std::cout << "Minutes   |    1     |    5     |    15    |    30    |    60    |\n";
         std::cout << "----------|----------|----------|----------|----------|----------|\n";
         std::cout << " m/s      |";
@@ -23,7 +23,19 @@ int main(){
         printSpeed(train.speed(15));
         printSpeed(train.speed(30));
         printSpeed(train.speed(60));
-        std::cout << "\n\n1 - Add a locomotive\n2 - Add an empty coach\n9 - Clear the train\n0 - Exit\n\n\n" << prompt << "\n";
+        std::cout << "\n km/h     |";
+        printSpeed(3.6*train.speed(1));
+        printSpeed(3.6*train.speed(5));
+        printSpeed(3.6*train.speed(15));
+        printSpeed(3.6*train.speed(30));
+        printSpeed(3.6*train.speed(60));
+        std::cout << "\n mp/h     |";
+        printSpeed(2.237*train.speed(1));
+        printSpeed(2.237*train.speed(5));
+        printSpeed(2.237*train.speed(15));
+        printSpeed(2.237*train.speed(30));
+        printSpeed(2.237*train.speed(60));
+        std::cout << "\n\n1 - Add a locomotive\n2 - Add an empty coach\n9 - Clear the train\n0 - Exit\n\n" << prompt << "\n";
         prompt = "Command?";
         std::cin >> command;
         if(command == 1){
