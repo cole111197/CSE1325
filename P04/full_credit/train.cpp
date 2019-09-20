@@ -17,11 +17,21 @@ double Train::speed(double minutes){
         power += _locomotives[i]->power();
     }
     for(int i = 0; i < _coaches.size(); i++){
-        power += _coaches[i]->weight();
+        weight += _coaches[i]->weight();
     }
     return std::sqrt(2*power*(seconds/weight));
 }
 
 std::string Train::to_art(){
-    return "TRAIN!";
+    std::string result;
+    for(int row = 0; row < 5; row++){
+        for(int i = 0; i < _locomotives.size(); i++){
+            result += _locomotives[i]->ascii_art(row);
+        }
+        for(int i = 0; i < _coaches.size(); i++){
+            result += _coaches[i]->ascii_art(row);
+        }
+        result += "\n";
+    }
+    return result;
 }

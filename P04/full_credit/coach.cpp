@@ -1,7 +1,17 @@
 #include "coach.h"
 #include <stdexcept>
 
-Coach::Coach(double weight): Stock(weight) { }
+Coach::Coach(double weight): Stock(weight), _passengers(0) {
+    _art = { // Coach
+    "               ",
+    " ______________",
+    " | [] [] [] []|",
+    " |            |",
+    "='OO--------OO'",
+    "###############",
+    };
+
+}
 
 void Coach::add_passengers(int passengers){
     if(_passengers + passengers > 120){

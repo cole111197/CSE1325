@@ -10,5 +10,5 @@ double Stock::weight(){
 }
 
 std::string Stock::ascii_art(int row){
-    return "STOCK!";
+    return _art[row];
 }
