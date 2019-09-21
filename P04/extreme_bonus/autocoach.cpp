@@ -1,6 +1,6 @@
 #include "autocoach.h"
-
-Autocoach::Autocoach(double weight, double power): Locomotive(weight, power){
+#include <iostream>
+Autocoach::Autocoach(double weight, double power): Locomotive(weight, power), Stock(weight){
     _art = { // Autocar
     "     , * o @ ~ ",
     "   .  _________",

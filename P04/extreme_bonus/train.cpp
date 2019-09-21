@@ -27,19 +27,19 @@ std::ostream& operator<<(std::ostream& ost, Train& train){
 }
 
 double Train::speed(double minutes){
-    /*
-    double power;
-    double weight;
+    double power = 0;
+    double weight = 0;
     double seconds = minutes*60;
-    for(int i = 0; i < _locomotives.size(); i++){
-        power += _locomotives[i]->power();
-    }
-    for(int i = 0; i < _coaches.size(); i++){
-        weight += _coaches[i]->weight();
+    for(int i = 0; i < _cars.size(); i++){
+        Locomotive* temp = dynamic_cast<Locomotive*>(_cars[i]);
+        if(temp){
+            weight += temp->weight();
+            power += temp->power();
+        } else {
+            weight += _cars[i]->weight();
+        }
     }
     return std::sqrt(2*power*(seconds/weight));
-    */
-   return 0;
 }
 
 std::string Train::to_art(){

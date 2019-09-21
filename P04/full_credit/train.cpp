@@ -15,6 +15,7 @@ double Train::speed(double minutes){
     double seconds = minutes*60;
     for(int i = 0; i < _locomotives.size(); i++){
         power += _locomotives[i]->power();
+        weight += _locomotives[i]->weight();
     }
     for(int i = 0; i < _coaches.size(); i++){
         weight += _coaches[i]->weight();

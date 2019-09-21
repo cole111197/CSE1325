@@ -2,7 +2,7 @@
 #define __LOCOMOTIVE_H
 #include "stock.h"
 
-class Locomotive: virtual public Stock{
+class Locomotive: public virtual Stock{
     private:
         double _power;
     public:
