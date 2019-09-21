@@ -88,15 +88,20 @@ int main(){
                     while(!valid){
                         std::cout << "Enter number of passengers (0-120): ";
                         std::cin >> passengers;
-                        if(passengers < 0 || passengers > 120 || std::cin.fail()){
+                        if(passengers < 0 || std::cin.fail()){
                             std::cin.clear();
                             std::cin.ignore(256, '\n');
                             std::cout << "Please enter a valid number of passengers\n";
                         } else {
                             Coach* temp = new Coach(weight);
-                            (*temp).add_passengers(passengers);
-                            train += *temp;
-                            valid = true;
+                            try{
+                                (*temp).add_passengers(passengers);
+                                train += *temp;
+                                valid = true;
+                            }
+                            catch(std::runtime_error e){
+                                std::cerr << e.what() << std::endl;
+                            }
                         }
                     }
                 }

@@ -103,15 +103,20 @@ int main(){
                     while(!valid){
                         std::cout << "Enter number of passengers (0-120): ";
                         std::cin >> passengers;
-                        if(passengers < 0 || passengers > 120 || std::cin.fail()){
+                        if(passengers < 0 || std::cin.fail()){
                             std::cin.clear();
                             std::cin.ignore(256, '\n');
                             std::cout << "Please enter a valid number of passengers\n";
                         } else {
                             Coach* temp = new Coach(weight);
-                            (*temp).add_passengers(passengers);
-                            train += *temp;
-                            valid = true;
+                            try{
+                                (*temp).add_passengers(passengers);
+                                train += *temp;
+                                valid = true;
+                            }
+                            catch(std::runtime_error e){
+                                std::cerr << e.what() << std::endl;
+                            }
                         }
                     }
                 }
@@ -158,15 +163,20 @@ int main(){
                     while(!valid){
                         std::cout << "Enter number of cattle (0-20): ";
                         std::cin >> cattle;
-                        if(cattle < 0 || cattle > 20 || std::cin.fail()){
+                        if(cattle < 0 || std::cin.fail()){
                             std::cin.clear();
                             std::cin.ignore(256, '\n');
                             std::cout << "Please enter a valid number of cattle\n";
                         } else {
                             Cattlecar* temp = new Cattlecar(weight);
-                            (*temp).add_cattle(cattle);
-                            train += *temp;
-                            valid = true;
+                            try{
+                                (*temp).add_cattle(cattle);
+                                train += *temp;
+                                valid = true;
+                            }
+                            catch(std::runtime_error e){
+                                std::cerr << e.what() << std::endl;
+                            }
                         }
                     }
                 }
@@ -186,15 +196,20 @@ int main(){
                     while(!valid){
                         std::cout << "Enter cargo (0-20000 kg): ";
                         std::cin >> cargo;
-                        if(cargo < 0 || cargo > 20 || std::cin.fail()){
+                        if(cargo < 0 || std::cin.fail()){
                             std::cin.clear();
                             std::cin.ignore(256, '\n');
                             std::cout << "Please enter a valid amount of cargo\n";
                         } else {
                             Boxcar* temp = new Boxcar(cargo);
-                            (*temp).add_cargo(cargo);
-                            train += *temp;
-                            valid = true;
+                            try{
+                                (*temp).add_cargo(cargo);
+                                train += *temp;
+                                valid = true;
+                            }
+                            catch(std::runtime_error e){
+                                std::cerr << e.what() << std::endl;
+                            }
                         }
                     }
                 }
