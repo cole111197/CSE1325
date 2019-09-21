@@ -2,11 +2,23 @@
 #include <cmath>
 
 Locomotive& Train::operator+=(Locomotive& locomotive){
-    Train::add_locomotive(locomotive);
+    _cars.push_back(&locomotive);
 }
 
 Locomotive& Train::operator+=(Coach& coach){
-    Train::add_coach(coach);
+    _cars.push_back(&coach);
+}
+
+Locomotive& Train::operator+=(Autocoach& autocoach){
+    _cars.push_back(&autocoach);
+}
+
+Locomotive& Train::operator+=(Cattlecar& cattlecar){
+    _cars.push_back(&cattlecar);
+}
+
+Locomotive& Train::operator+=(Boxcar& boxcar){
+    _cars.push_back(&boxcar);
 }
 
 std::ostream& operator<<(std::ostream& ost, Train& train){
@@ -15,6 +27,7 @@ std::ostream& operator<<(std::ostream& ost, Train& train){
 }
 
 double Train::speed(double minutes){
+    /*
     double power;
     double weight;
     double seconds = minutes*60;
@@ -25,24 +38,15 @@ double Train::speed(double minutes){
         weight += _coaches[i]->weight();
     }
     return std::sqrt(2*power*(seconds/weight));
-}
-
-void Train::add_locomotive(Locomotive& locomotive){
-    _locomotives.push_back(&locomotive);
-}
-
-void Train::add_coach(Coach& coach){
-    _coaches.push_back(&coach);
+    */
+   return 0;
 }
 
 std::string Train::to_art(){
     std::string result;
     for(int row = 0; row < 5; row++){
-        for(int i = 0; i < _locomotives.size(); i++){
-            result += _locomotives[i]->ascii_art(row);
-        }
-        for(int i = 0; i < _coaches.size(); i++){
-            result += _coaches[i]->ascii_art(row);
+        for(int i = 0; i < _cars.size(); i++){
+            result += _cars[i]->ascii_art(row);
         }
         result += "\n";
     }

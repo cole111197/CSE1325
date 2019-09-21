@@ -2,7 +2,7 @@
 #define __COACH_H
 #include "stock.h"
 
-class Coach: public Stock{
+class Coach: virtual public Stock{
     private:
         int _passengers;
     public:

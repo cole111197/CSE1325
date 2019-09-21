@@ -35,7 +35,13 @@ int main(){
         printSpeed(2.237*train.speed(15));
         printSpeed(2.237*train.speed(30));
         printSpeed(2.237*train.speed(60));
-        std::cout << "\n\n1 - Add a standard locomotive    11 - Add a custom locomotive\n2 - Add an empty coach           12 - Add a custom coach\n3 - Add a standard autocoach\n9 - Clear the train\n0 - Exit\n\n" << prompt << "\n";
+        std::cout << "\n\n1 - Add a standard locomotive    11 - Add a custom locomotive\n";
+        std::cout << "2 - Add an empty coach           12 - Add a custom coach\n";
+        std::cout << "3 - Add a standard autocoach\n";
+        std::cout << "4 - Add a standard cattlecar\n";
+        std::cout << "5 - Add a standard boxcar\n";
+        std::cout << "9 - Clear the train\n";
+        std::cout << "0 - Exit\n\n" << prompt << "\n";
         prompt = "Command?";
         std::cin >> command;
         if(command == 1){
@@ -45,7 +51,14 @@ int main(){
             Coach* temp = new Coach();
             train += *temp;
         } else if(command == 3){
-            
+            Autocoach* temp = new Autocoach();
+            train += *temp;
+        } else if(command == 4){
+            Cattlecar* temp = new Cattlecar();
+            train += *temp;
+        } else if(command == 5){
+            Boxcar* temp = new Boxcar();
+            train += *temp;
         } else if(command == 9){
             train = Train();
         } else if(command == 11){
