@@ -44,7 +44,7 @@ double Train::speed(double minutes){
 
 std::string Train::to_art(){
     std::string result;
-    for(int row = 0; row < 5; row++){
+    for(int row = 0; row < 6; row++){
         for(int i = 0; i < _cars.size(); i++){
             result += _cars[i]->ascii_art(row);
         }

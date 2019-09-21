@@ -4,9 +4,9 @@
 Boxcar::Boxcar(double weight): Stock(weight){
     _art = { // Boxcar
     "               ",
-    " _____________ ",
-    " |   |\\ /|   |",
-    " |   |/ \\|   |",
+    "  _____________",
+    "  |   |\\ /|   |",
+    "  |   |/ \\|   |",
     "='OO--------OO'",
     "###############",
     };
@@ -14,7 +14,7 @@ Boxcar::Boxcar(double weight): Stock(weight){
 
 void Boxcar::add_cargo(double weight){
     if(Stock::weight() + _cargo > 20000){
-        throw std::runtime_error{"Cargo exceeds 20,000kg"}; 
+        throw std::runtime_error{"Cargo exceeds 20000 kg"}; 
     } else {
         _cargo += weight;
     }   
