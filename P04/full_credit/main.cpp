@@ -12,7 +12,7 @@ int main(){
     int command;
     std::string prompt = "Command?";
     while(command != 0){
-        std::cout << "=================\nTITLE HERE\n=================\n\n";
+        std::cout << "==================\n====CS Express====\n==================\n\n";
         std::cout << train.to_art();
         std::cout << "#########################################################################\n";
         std::cout << "Minutes   |    1     |    5     |    15    |    30    |    60    |\n";
