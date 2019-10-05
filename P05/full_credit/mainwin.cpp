@@ -18,7 +18,20 @@ Mainwin::Mainwin(Store& store) : _store{&store} {
     // ///////
     // M E N U
     // Add and configure a menu bar as the top item in the vertical box
-    
+    Gtk::MenuBar* menu = Gtk::manage(new Gtk::MenuBar());
+    Gtk::MenuItem* menu_file = Gtk::manage(new Gtk::MenuItem());
+    Gtk::Menu* submenu_file = Gtk::manage(new Gtk::Menu());
+    Gtk::MenuItem* menu_quit = Gtk::manage(new Gtk::MenuItem());
+
+    menu_file->set_label("File");
+    menu_file->set_submenu(*submenu_file);
+    menu_quit->set_label("Quit");
+    menu_quit->signal_activate().connect(
+            [this] {this->on_quit_click();}
+        );
+    submenu_file->append(*menu_quit);
+    menu->append(*menu_file);
+    main_box->add(*menu);
 
     // /////////////
     // T O O L B A R
@@ -53,4 +66,6 @@ Mainwin::~Mainwin() { }
 // U T I L I T I E S
 // /////////////////
 
-
+void Mainwin::on_quit_click(){
+    close();
+}
