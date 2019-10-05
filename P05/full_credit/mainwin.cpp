@@ -134,5 +134,9 @@ void Mainwin::on_add_sweet_helper(){
 }
 
 void Mainwin::on_list_sweets_click(){
-    
+    std::string label = "Sweets:\n";
+    for(int i = 0; i < _store->num_sweets(); i++){
+        label += _store->sweet(i).name() + " : " + std::to_string(_store->sweet(i).price()) + "\n";
+    }
+    data->set_label(label);
 }
