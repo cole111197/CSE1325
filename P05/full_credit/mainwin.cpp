@@ -22,6 +22,7 @@ Mainwin::Mainwin(Store& store) : _store{&store} {
     Gtk::MenuItem* menu_file = Gtk::manage(new Gtk::MenuItem());
     Gtk::Menu* submenu_file = Gtk::manage(new Gtk::Menu());
     Gtk::MenuItem* menu_quit = Gtk::manage(new Gtk::MenuItem());
+    Gtk::MenuItem* menu_new = Gtk::manage(new Gtk::MenuItem());
 
     menu_file->set_label("File");
     menu_file->set_submenu(*submenu_file);
@@ -29,7 +30,12 @@ Mainwin::Mainwin(Store& store) : _store{&store} {
     menu_quit->signal_activate().connect(
             [this] {this->on_quit_click();}
         );
+    menu_new->set_label("New");
+    menu_new->signal_activate().connect(
+            [this] {this->on_new_store_click();}
+        );
     submenu_file->append(*menu_quit);
+    submenu_file->append(*menu_new);
     menu->append(*menu_file);
     main_box->add(*menu);
 
@@ -68,4 +74,8 @@ Mainwin::~Mainwin() { }
 
 void Mainwin::on_quit_click(){
     close();
+}
+
+void Mainwin::on_new_store_click(){
+    _store = new Store();
 }
