@@ -1,5 +1,5 @@
 #include "mainwin.h"
-#include <iostream>
+#include <vector>
 
 Mainwin::Mainwin() : Mainwin{*(new Store)} { }
 Mainwin::Mainwin(Store& store) : _store{&store} {
@@ -23,14 +23,18 @@ Mainwin::Mainwin(Store& store) : _store{&store} {
     submenu_file = Gtk::manage(new Gtk::Menu());
     menu_sweets = Gtk::manage(new Gtk::MenuItem());
     submenu_sweets = Gtk::manage(new Gtk::Menu());
+    menu_help = Gtk::manage(new Gtk::MenuItem());
+    submenu_help = Gtk::manage(new Gtk::Menu());
     menuitem_file_quit = Gtk::manage(new Gtk::MenuItem());
     menuitem_file_new = Gtk::manage(new Gtk::MenuItem());
     menuitem_sweets_add = Gtk::manage(new Gtk::MenuItem());
     menuitem_sweets_list = Gtk::manage(new Gtk::MenuItem());
+    menuitem_help_about = Gtk::manage(new Gtk::MenuItem());
 
     main_box->pack_start(*main_menu, Gtk::PACK_SHRINK);
     main_menu->append(*menu_file);
     main_menu->append(*menu_sweets);
+    main_menu->append(*menu_help);
 
     menu_file->set_label("File");
     menu_file->set_submenu(*submenu_file);
@@ -58,6 +62,13 @@ Mainwin::Mainwin(Store& store) : _store{&store} {
     submenu_sweets->append(*menuitem_sweets_add);
     submenu_sweets->append(*menuitem_sweets_list);
 
+    menu_help->set_label("Help");
+    menu_help->set_submenu(*submenu_help);
+    menuitem_help_about->set_label("About");
+    menuitem_help_about->signal_activate().connect(
+            [this] {this->on_about_click();}
+        );
+    submenu_help->append(*menuitem_help_about);
 
     // /////////////
     // T O O L B A R
@@ -139,4 +150,24 @@ void Mainwin::on_list_sweets_click(){
         label += _store->sweet(i).name() + " : " + std::to_string(_store->sweet(i).price()) + "\n";
     }
     data->set_label(label);
+}
+
+void Mainwin::on_about_click(){
+    help_dialog = Gtk::manage(new Gtk::AboutDialog());
+
+    std::vector<Glib::ustring> authors;
+    authors.push_back("Cole Montgomery");
+    help_dialog->set_program_name("Mav's Ultimate Sweet Shop");
+    help_dialog->set_authors(authors);
+    help_dialog->set_license("LICENSE");
+
+    int response = help_dialog->run();
+
+    if(response == Gtk::RESPONSE_DELETE_EVENT){
+        help_dialog->hide();
+    }
+}
+
+void Mainwin::on_about_click_helper(){
+    help_dialog->hide();
 }
