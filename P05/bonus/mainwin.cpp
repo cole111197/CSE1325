@@ -68,12 +68,26 @@ Mainwin::Mainwin(Store& store) : _store{&store} {
     menuitem_help_about->signal_activate().connect(
             [this] {this->on_about_click();}
         );
-    submenu_help->append(*menuitem_help_about);
+    submenu_help->add(*menuitem_help_about);
 
     // /////////////
     // T O O L B A R
     // Add a toolbar to the vertical box just below the menu (bonus level)
+    main_toolbar = Gtk::manage(new Gtk::Toolbar());
+    new_store_button = Gtk::manage(new Gtk::ToolButton(Gtk::Stock::NEW));
+    quit_button = Gtk::manage(new Gtk::ToolButton(Gtk::Stock::QUIT));
 
+    new_store_button->signal_clicked().connect(
+            [this] {this->on_new_store_click();}
+        );
+    main_toolbar->append(*new_store_button);
+
+    quit_button->signal_clicked().connect(
+        [this] {this->on_quit_click();}
+    );
+    main_toolbar->append(*quit_button);
+    
+    main_box->pack_start(*main_toolbar, Gtk::PACK_SHRINK);
 
 
     // ///////////////////////

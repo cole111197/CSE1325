@@ -27,6 +27,9 @@ class Mainwin : public Gtk::Window {
         Gtk::MenuItem* menuitem_help_about;
         Gtk::MenuItem* menuitem_place_order;
         Gtk::MenuItem* menuitem_list_orders;
+        Gtk::Toolbar* main_toolbar;
+        Gtk::ToolButton* new_store_button;
+        Gtk::ToolButton* quit_button;
         Gtk::ToolButton* add_sweet_button;
         Gtk::ToolButton* list_sweets_button;
         Gtk::ToolButton* place_order_button;
