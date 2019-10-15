@@ -76,19 +76,29 @@ Mainwin::Mainwin(Store& store) : _store{&store} {
     main_toolbar = Gtk::manage(new Gtk::Toolbar());
     new_store_button = Gtk::manage(new Gtk::ToolButton(Gtk::Stock::NEW));
     quit_button = Gtk::manage(new Gtk::ToolButton(Gtk::Stock::QUIT));
+    Gtk::Image* sweet_image = Gtk::manage(new Gtk::Image("Assets/sweet.png"));
+    Gtk::Image* list_image = Gtk::manage(new Gtk::Image("Assets/list.png"));
+    add_sweet_button = Gtk::manage(new Gtk::ToolButton(*sweet_image));
+    list_sweets_button = Gtk::manage(new Gtk::ToolButton(*list_image));
+
+    main_toolbar->append(*new_store_button);
+    main_toolbar->append(*list_sweets_button);
+    main_toolbar->append(*add_sweet_button);
+    main_toolbar->append(*quit_button);
+    main_box->pack_start(*main_toolbar, Gtk::PACK_SHRINK);
 
     new_store_button->signal_clicked().connect(
-            [this] {this->on_new_store_click();}
-        );
-    main_toolbar->append(*new_store_button);
-
+        [this] {this->on_new_store_click();}
+    );
+    list_sweets_button->signal_clicked().connect(
+        [this] {this->on_list_sweets_click();}
+    );
+    add_sweet_button->signal_clicked().connect(
+        [this] {this->on_add_sweet_click();}
+    );
     quit_button->signal_clicked().connect(
         [this] {this->on_quit_click();}
     );
-    main_toolbar->append(*quit_button);
-    
-    main_box->pack_start(*main_toolbar, Gtk::PACK_SHRINK);
-
 
     // ///////////////////////
     // D A T A   D I S P L A Y
