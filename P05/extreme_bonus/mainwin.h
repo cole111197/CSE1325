@@ -40,6 +40,6 @@ class Mainwin : public Gtk::Window {
         void on_list_orders_click();
         void on_about_click();
         void on_quit_click();
-        void on_add_sweet_helper();
+        void on_add_sweet_helper(bool add);
 };
 #endif 
