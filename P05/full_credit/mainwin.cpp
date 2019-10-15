@@ -2,7 +2,14 @@
 #include <vector>
 
 Mainwin::Mainwin() : Mainwin{*(new Store)} { }
-Mainwin::Mainwin(Store& store) : _store{&store} {
+Mainwin::Mainwin(Store& store) : _store{&store},
+    menuitem_file_quit{Gtk::manage(new Gtk::MenuItem())},
+    menuitem_file_new{Gtk::manage(new Gtk::MenuItem())},
+    menuitem_sweets_add{Gtk::manage(new Gtk::MenuItem())},
+    menuitem_sweets_list{Gtk::manage(new Gtk::MenuItem())},
+    menuitem_help_about{Gtk::manage(new Gtk::MenuItem())},
+    data{Gtk::manage(new Gtk::Label("Data"))}
+{
 
     // /////////////////
     // G U I   S E T U P
@@ -18,18 +25,13 @@ Mainwin::Mainwin(Store& store) : _store{&store} {
     // ///////
     // M E N U
     // Add and configure a menu bar as the top item in the vertical box
-    main_menu = Gtk::manage(new Gtk::MenuBar());
-    menu_file = Gtk::manage(new Gtk::MenuItem());
-    submenu_file = Gtk::manage(new Gtk::Menu());
-    menu_sweets = Gtk::manage(new Gtk::MenuItem());
-    submenu_sweets = Gtk::manage(new Gtk::Menu());
-    menu_help = Gtk::manage(new Gtk::MenuItem());
-    submenu_help = Gtk::manage(new Gtk::Menu());
-    menuitem_file_quit = Gtk::manage(new Gtk::MenuItem());
-    menuitem_file_new = Gtk::manage(new Gtk::MenuItem());
-    menuitem_sweets_add = Gtk::manage(new Gtk::MenuItem());
-    menuitem_sweets_list = Gtk::manage(new Gtk::MenuItem());
-    menuitem_help_about = Gtk::manage(new Gtk::MenuItem());
+    Gtk::MenuBar* main_menu = Gtk::manage(new Gtk::MenuBar());
+    Gtk::MenuItem* menu_file = Gtk::manage(new Gtk::MenuItem());
+    Gtk::MenuItem* menu_sweets = Gtk::manage(new Gtk::MenuItem());
+    Gtk::MenuItem* menu_help = Gtk::manage(new Gtk::MenuItem());
+    Gtk::Menu* submenu_file = Gtk::manage(new Gtk::Menu());
+    Gtk::Menu* submenu_sweets = Gtk::manage(new Gtk::Menu());
+    Gtk::Menu* submenu_help = Gtk::manage(new Gtk::Menu());
 
     main_box->pack_start(*main_menu, Gtk::PACK_SHRINK);
     main_menu->append(*menu_file);
@@ -79,8 +81,6 @@ Mainwin::Mainwin(Store& store) : _store{&store} {
     // ///////////////////////
     // D A T A   D I S P L A Y
     // Provide a text entry box to show the sweets and orders
-    data = Gtk::manage(new Gtk::Label());
-    data->set_label("Data");
     main_box->pack_start(*data, Gtk::PACK_SHRINK);
 
     // ///////////////////////////////////    
@@ -98,11 +98,6 @@ Mainwin::~Mainwin() { }
 // C A L L B A C K S
 // /////////////////
 
-
-// /////////////////
-// U T I L I T I E S
-// /////////////////
-
 void Mainwin::on_quit_click(){
     close();
 }
@@ -115,8 +110,8 @@ void Mainwin::on_add_sweet_click(){
     add_sweet_dialog = Gtk::manage(new Gtk::Dialog());
     add_sweet_dialog->set_title("Add sweet to store");
 
-    name = Gtk::manage(new Gtk::Entry());
-    price = Gtk::manage(new Gtk::Entry());
+    add_name = Gtk::manage(new Gtk::Entry());
+    add_price = Gtk::manage(new Gtk::Entry());
     Gtk::Label* name_label = Gtk::manage(new Gtk::Label());
     Gtk::Label* price_label = Gtk::manage(new Gtk::Label());
     Gtk::Button* close = Gtk::manage(new Gtk::Button());
@@ -129,19 +124,13 @@ void Mainwin::on_add_sweet_click(){
     name_label->set_label("Name");
     price_label->set_label("Price");
     add_sweet_dialog->get_vbox()->pack_start(*name_label, Gtk::PACK_SHRINK);
-    add_sweet_dialog->get_vbox()->pack_start(*name, Gtk::PACK_SHRINK);
+    add_sweet_dialog->get_vbox()->pack_start(*add_name, Gtk::PACK_SHRINK);
     add_sweet_dialog->get_vbox()->pack_start(*price_label, Gtk::PACK_SHRINK);
-    add_sweet_dialog->get_vbox()->pack_start(*price, Gtk::PACK_SHRINK);
+    add_sweet_dialog->get_vbox()->pack_start(*add_price, Gtk::PACK_SHRINK);
     add_sweet_dialog->get_vbox()->pack_start(*close, Gtk::PACK_SHRINK);
 
     add_sweet_dialog->show_all_children();
     add_sweet_dialog->run();
-}
-
-void Mainwin::on_add_sweet_helper(){
-    Sweet sweet(name->get_text(),std::atof(price->get_text().data()));
-    _store->add(sweet);
-    add_sweet_dialog->hide();
 }
 
 void Mainwin::on_list_sweets_click(){
@@ -153,13 +142,13 @@ void Mainwin::on_list_sweets_click(){
 }
 
 void Mainwin::on_about_click(){
-    help_dialog = Gtk::manage(new Gtk::AboutDialog());
+    Gtk::AboutDialog* help_dialog = Gtk::manage(new Gtk::AboutDialog());
 
     std::vector<Glib::ustring> authors;
     authors.push_back("Cole Montgomery");
     help_dialog->set_program_name("Mav's Ultimate Sweet Shop");
     help_dialog->set_authors(authors);
-    help_dialog->set_license("LICENSE");
+    help_dialog->set_license("GPLv3");
 
     int response = help_dialog->run();
 
@@ -168,6 +157,12 @@ void Mainwin::on_about_click(){
     }
 }
 
-void Mainwin::on_about_click_helper(){
-    help_dialog->hide();
+// /////////////////
+// U T I L I T I E S
+// /////////////////
+
+void Mainwin::on_add_sweet_helper(){
+    Sweet sweet(add_name->get_text(),std::atof(add_price->get_text().data()));
+    _store->add(sweet);
+    add_sweet_dialog->hide();
 }

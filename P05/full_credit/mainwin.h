@@ -13,13 +13,6 @@ class Mainwin : public Gtk::Window {
     private:
         Store *_store;
         void reset_sensitivity();
-        Gtk::MenuBar* main_menu;
-        Gtk::Menu* submenu_file;
-        Gtk::Menu* submenu_sweets;
-        Gtk::Menu* submenu_help;
-        Gtk::MenuItem* menu_file;
-        Gtk::MenuItem* menu_sweets;
-        Gtk::MenuItem* menu_help;
         Gtk::MenuItem* menuitem_file_quit;
         Gtk::MenuItem* menuitem_file_new;
         Gtk::MenuItem* menuitem_sweets_add;
@@ -33,8 +26,8 @@ class Mainwin : public Gtk::Window {
         Gtk::ToolButton* list_orders_button;
         Gtk::Dialog* add_sweet_dialog;
         Gtk::AboutDialog* help_dialog;
-        Gtk::Entry* name;
-        Gtk::Entry* price;
+        Gtk::Entry* add_name;
+        Gtk::Entry* add_price;
         Gtk::Label* data;
         Gtk::Label* msg;
 
@@ -47,7 +40,6 @@ class Mainwin : public Gtk::Window {
         void on_about_click();
         void on_quit_click();
         void on_add_sweet_helper();
-        void on_about_click_helper();
     // Lots more Mainwin members are needed!
     // (You ARE permitted to change the above as well if you like.)
 };
