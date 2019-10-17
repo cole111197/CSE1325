@@ -1,6 +1,6 @@
 #include "mainwin.h"
 #include <sstream>
-
+#include <iostream>
 #ifndef __SWEETSADDDLG
 #include "entrydialog.h"
 #endif
@@ -25,7 +25,7 @@ Mainwin::Mainwin(Store& store) : _store{&store} {
     Gtk::MenuBar *menubar = Gtk::manage(new Gtk::MenuBar());
     vbox->pack_start(*menubar, Gtk::PACK_SHRINK, 0);
 
-    //     F I L E
+//////     F I L E
     // Create a File menu and add to the menu bar
     Gtk::MenuItem *menuitem_file = Gtk::manage(new Gtk::MenuItem("_File", true));
     menubar->append(*menuitem_file);
@@ -44,7 +44,21 @@ Mainwin::Mainwin(Store& store) : _store{&store} {
     menuitem_quit->signal_activate().connect([this] {this->on_quit_click();});
     filemenu->append(*menuitem_quit);
 
-    //     S W E E T S
+//////     O R D E R S
+    // Create an Orders menu and add to the menu bar
+    Gtk::MenuItem *menuitem_orders = Gtk::manage(new Gtk::MenuItem("_Orders", true));
+    menubar->append(*menuitem_orders);
+    Gtk::Menu *ordersmenu = Gtk::manage(new Gtk::Menu());
+    menuitem_orders->set_submenu(*ordersmenu);
+
+    //         P L A C E
+    menuitem_place_order = Gtk::manage(new Gtk::MenuItem("_Place", true));
+    menuitem_place_order->signal_activate().connect([this] {this->on_place_order_click();});
+    ordersmenu->append(*menuitem_place_order);
+
+    //         L I S T
+
+//////     S W E E T S
     // Create a Sweets menu and add to the menu bar
     Gtk::MenuItem *menuitem_sweets = Gtk::manage(new Gtk::MenuItem("_Sweets", true));
     menubar->append(*menuitem_sweets);
@@ -63,7 +77,7 @@ Mainwin::Mainwin(Store& store) : _store{&store} {
     menuitem_list_sweets->signal_activate().connect([this] {this->on_list_sweets_click();});
     sweetsmenu->append(*menuitem_list_sweets);
 
-    //     H E L P
+//////     H E L P
     // Create a Help menu and add to the menu bar
     Gtk::MenuItem *menuitem_help = Gtk::manage(new Gtk::MenuItem("_Help", true));
     menubar->append(*menuitem_help);
@@ -159,6 +173,57 @@ void Mainwin::on_new_store_click() {
 
 void Mainwin::on_quit_click() {
     close();
+}
+
+void Mainwin::on_place_order_click() {
+    /*
+    Order order{};
+    Sweet sweet{"Test", 10};
+    order.add(5, sweet);
+    _store->add(order);
+    std::cout << _store->order(0) << std::endl;
+    */
+   Order order{};
+   Gtk::MessageDialog* dialog_sweet = Gtk::manage(new Gtk::MessageDialog(*this, "Name of sweet to add?"));
+   Gtk::Entry* entry_name = Gtk::manage(new Gtk::Entry());
+   std::string options = "Options:\n";
+   std::string name;
+   for(int i = 0; i < _store->num_sweets(); i++){
+       options += _store->sweet(i).name() + "\n";
+   }
+   Gtk::Label* options_label = Gtk::manage(new Gtk::Label(options));
+   dialog_sweet->get_vbox()->pack_start(*options_label, Gtk::PACK_SHRINK);
+   dialog_sweet->get_vbox()->pack_start(*entry_name, Gtk::PACK_SHRINK);
+   dialog_sweet->show_all_children();
+   bool match = false;
+   while(!match){
+        dialog_sweet->run();
+        for(int i = 0; i < _store->num_sweets(); i++){
+            if(entry_name->get_text() == _store->sweet(i).name()){
+                match == true;
+                name = entry_name->get_text();
+            }
+        }
+        if(!match){
+            dialog_name->set_message("Invalid sweet name! Name of sweet to add?");
+        }
+   }
+
+
+   Gtk::MessageDialog* dialog_quantity = Gtk::manage(new Gtk::MessageDialog(*this, "Quantity of " + name + " to add?"));
+   Gtk::Entry* entry_quantity = Gtk::manage(new Gtk::Entry());
+   int quantity = -1;
+   dialog_quantity->get_vbox()->pack_start(*entry_quantity, Gtk::PACK_SHRINK);
+   dialog_quantity->show_all_children();
+   while(quantity < 0){
+        try {
+            dialog_quantity->run();
+            quantity = std::stoi(entry_quantity->get_text());
+        } catch(std::exception e) {
+            dialog_quantity->set_message("Invalid quantity! Quantity of " + name + " to add?");
+            quantity = -1;
+        }
+    }
 }
 
 void Mainwin::on_add_sweet_click() {
