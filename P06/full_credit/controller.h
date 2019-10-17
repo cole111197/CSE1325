@@ -14,7 +14,7 @@ class Controller {
     Controller(Store& store);
     Controller();
 
-    // The command line interface
+  // The command line interface
     int cli();
 
     // The commands
@@ -23,12 +23,10 @@ class Controller {
     void place_order();
     void list_order();
   protected:
-    // Utilities to handle command line input for primitive types
     char get_char(std::string prompt, char min = ' ', char max = '~');
     int get_int(std::string prompt, int min = INT_MIN, int max = INT_MAX);
     double get_double(std::string prompt, double min = -DBL_MAX, double max = DBL_MAX);
   private:
-    // Our reference to the model, and an instance of the view
     Store& _store;
     View _view;
 };

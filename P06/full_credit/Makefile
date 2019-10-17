@@ -3,14 +3,22 @@ GTKFLAGS = `/usr/bin/pkg-config gtkmm-3.0 --cflags --libs`
 
 all: sweets sweets-cli
 
-sweets: main-gui.o mainwin.o order.o store.o sweet.o view.o *.h
-	$(CXX) $(CXXFLAGS) main-gui.o mainwin.o order.o store.o sweet.o $(GTKFLAGS) -o sweets
+bonus: CXXFLAGS += -D__SENSITIVITY1 -D__TOOLBAR -D__RICHTEXT
+bonus: sweets
+
+xbonus: CXXFLAGS += -D__SENSITIVITY1 -D__TOOLBAR -D__RICHTEXT -D__SWEETSADDDLG -D__STATUSBAR
+xbonus: sweets
+
+sweets: main-gui.o mainwin.o entrydialog.o order.o store.o sweet.o view.o *.h
+	$(CXX) $(CXXFLAGS) main-gui.o mainwin.o entrydialog.o order.o store.o sweet.o $(GTKFLAGS) -o sweets
 sweets-cli:  main-cli.o controller.o order.o store.o sweet.o view.o *.h
 	$(CXX) $(CXXFLAGS) main-cli.o controller.o view.o order.o store.o sweet.o -o sweets-cli
 main-gui.o: main-gui.cpp *.h
 	$(CXX) $(CXXFLAGS) -c main-gui.cpp $(GTKFLAGS) -o main-gui.o
 mainwin.o: mainwin.cpp *.h
 	$(CXX) $(CXXFLAGS) -c mainwin.cpp $(GTKFLAGS) -o mainwin.o
+entrydialog.o: entrydialog.cpp *.h
+	$(CXX) $(CXXFLAGS) -c entrydialog.cpp $(GTKFLAGS) -o entrydialog.o
 main-cli.o: main-cli.cpp *.h
 	$(CXX) $(CXXFLAGS) -c main-cli.cpp -o main-cli.o
 controller.o: controller.cpp *.h
@@ -24,5 +32,5 @@ sweet.o: sweet.cpp *.h
 view.o: view.cpp *.h
 	$(CXX) $(CXXFLAGS) -c view.cpp -o view.o
 clean:
-	rm -f *.o *.gch a.out sweets sweets-cli
+	rm -f *.o *.gch *.ii *.s a.out sweets sweets-cli
 
