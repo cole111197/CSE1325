@@ -147,10 +147,9 @@ Mainwin::Mainwin(Store& store) : _store{&store} {
     msg->set_hexpand(true);
     vbox->add(*msg);
 
-#ifdef __SENSITIVITY1
     // Set the sensitivity of menu and tool bar items to match what data is available
     reset_sensitivity();
-#endif
+    
     // Make the box and everything in it visible
     vbox->show_all();
 }
@@ -164,9 +163,7 @@ Mainwin::~Mainwin() { }
 void Mainwin::on_new_store_click() {
     _store = new Store;
 
-#ifdef __SENSITIVITY1
     reset_sensitivity();
-#endif
     data->set_text("");
     msg->set_text("New Mav's Ultimate Sweet Shop created");
 }
@@ -217,6 +214,7 @@ void Mainwin::on_place_order_click() {
         order.add(quantity, _store->sweet(sweet_index));
         _store->add(order);
         msg->set_text("Order #" + std::to_string(_store->num_orders()-1) + " placed: " + name + " x " + std::to_string(quantity));
+        reset_sensitivity();
     }
 }
 
@@ -306,9 +304,7 @@ void Mainwin::on_add_sweet_click() {
     on_list_sweets_click();
     msg->set_text("Added " + sweet.name());
 
-#ifdef __SENSITIVITY1
     reset_sensitivity();
-#endif
 }
 
 void Mainwin::on_list_orders_click(){
@@ -382,16 +378,15 @@ void Mainwin::on_about_click() {
     dlg.run();
 }
 
-#ifdef __SENSITIVITY1
 // /////////////////
 // Utilities
 // /////////////////
 
 void Mainwin::reset_sensitivity() {
     menuitem_list_sweets->set_sensitive(_store->num_sweets() > 0);
+    menuitem_place_order->set_sensitive(_store->num_sweets() > 0);
+    menuitem_list_orders->set_sensitive(_store->num_orders() > 0);
 #ifdef __TOOLBAR
     list_sweets_button->set_sensitive(_store->num_sweets() > 0);
 #endif
 }
-#endif
-

@@ -23,9 +23,8 @@ class Mainwin : public Gtk::Window
         void on_quit_click();                 // Exit the program
     private:
         Store *_store;                        // Current model
-#ifdef __SENSITIVITY1
         void reset_sensitivity();             // Reset command sensitivity based on data
-#endif
+
         // Menu items
         Gtk::MenuItem *menuitem_add_sweet;    // Sweets > Add
         Gtk::MenuItem *menuitem_list_sweets;  // Sweets > List
