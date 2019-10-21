@@ -42,9 +42,7 @@ class Mainwin : public Gtk::Window
 
         // Display widgets
         Gtk::Label *data;                     // Information display
-#ifdef __STATUSBAR
         Gtk::Label *msg;                      // Status message display
-#endif
 };
 #endif 
 

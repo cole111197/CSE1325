@@ -138,13 +138,12 @@ Mainwin::Mainwin(Store& store) : _store{&store} {
     data->set_vexpand(true);
     vbox->add(*data);
 
-#ifdef __STATUSBAR
     // S T A T U S   B A R   D I S P L A Y
     // Provide a status bar for transient messages
     msg = Gtk::manage(new Gtk::Label());
     msg->set_hexpand(true);
     vbox->add(*msg);
-#endif
+
 #ifdef __SENSITIVITY1
     // Set the sensitivity of menu and tool bar items to match what data is available
     reset_sensitivity();
@@ -166,9 +165,7 @@ void Mainwin::on_new_store_click() {
     reset_sensitivity();
 #endif
     data->set_text("");
-#ifdef __STATUSBAR
     msg->set_text("New Mav's Ultimate Sweet Shop created");
-#endif
 }
 
 void Mainwin::on_quit_click() {
@@ -176,53 +173,46 @@ void Mainwin::on_quit_click() {
 }
 
 void Mainwin::on_place_order_click() {
-    /*
+
     Order order{};
-    Sweet sweet{"Test", 10};
-    order.add(5, sweet);
-    _store->add(order);
-    std::cout << _store->order(0) << std::endl;
-    */
-   Order order{};
-   Gtk::MessageDialog* dialog_sweet = Gtk::manage(new Gtk::MessageDialog(*this, "Name of sweet to add?"));
-   Gtk::Entry* entry_name = Gtk::manage(new Gtk::Entry());
-   std::string options = "Options:\n";
-   std::string name;
-   for(int i = 0; i < _store->num_sweets(); i++){
-       options += _store->sweet(i).name() + "\n";
-   }
-   Gtk::Label* options_label = Gtk::manage(new Gtk::Label(options));
-   dialog_sweet->get_vbox()->pack_start(*options_label, Gtk::PACK_SHRINK);
-   dialog_sweet->get_vbox()->pack_start(*entry_name, Gtk::PACK_SHRINK);
-   dialog_sweet->show_all_children();
-   bool match = false;
-   while(!match){
-        dialog_sweet->run();
-        for(int i = 0; i < _store->num_sweets(); i++){
-            if(entry_name->get_text() == _store->sweet(i).name()){
-                match == true;
-                name = entry_name->get_text();
+    EntryDialog dialog_name{*this, "Name of sweet to add?"};
+    std::string name;
+    int quantity;
+
+    std::string options = "Options:\n";
+    for(int i = 0; i < _store->num_sweets(); i++){
+        options += _store->sweet(i).name() + "\n";
+    }
+    Gtk::Label* options_label = Gtk::manage(new Gtk::Label(options));
+    dialog_name.get_vbox()->pack_start(*options_label, Gtk::PACK_SHRINK);
+    dialog_name.show_all_children();
+    bool match = false;
+    int sweet_index = -1;
+    dialog_name.run();
+    for(int i = 0; i < _store->num_sweets(); i++){
+        if(dialog_name.get_text() == _store->sweet(i).name()){
+            sweet_index = i;
+            match = true;
+            name = dialog_name.get_text();
+        }
+    }
+    if(!match){
+        msg->set_text("Invalid sweet name for order");
+        dialog_name.hide();
+    } else {
+        EntryDialog dialog_quantity{*this, "Quantity of " + name + " to add?"};
+        try{
+            dialog_quantity.run();
+            quantity = std::stoi(dialog_quantity.get_text());
+            if(quantity <= 0){
+                throw std::exception();
             }
+        } catch(std::exception e){
+            msg->set_text("Invalid quantity of " + name + " to add to order!");
+            dialog_quantity.hide();
         }
-        if(!match){
-            dialog_name->set_message("Invalid sweet name! Name of sweet to add?");
-        }
-   }
-
-
-   Gtk::MessageDialog* dialog_quantity = Gtk::manage(new Gtk::MessageDialog(*this, "Quantity of " + name + " to add?"));
-   Gtk::Entry* entry_quantity = Gtk::manage(new Gtk::Entry());
-   int quantity = -1;
-   dialog_quantity->get_vbox()->pack_start(*entry_quantity, Gtk::PACK_SHRINK);
-   dialog_quantity->show_all_children();
-   while(quantity < 0){
-        try {
-            dialog_quantity->run();
-            quantity = std::stoi(entry_quantity->get_text());
-        } catch(std::exception e) {
-            dialog_quantity->set_message("Invalid quantity! Quantity of " + name + " to add?");
-            quantity = -1;
-        }
+        order.add(quantity, _store->sweet(sweet_index));
+        _store->add(order);
     }
 }
 
@@ -235,9 +225,7 @@ void Mainwin::on_add_sweet_click() {
     dialog.run();
     name = dialog.get_text();
     if(name.size() == 0) {
-#ifdef __STATUSBAR
         msg->set_text("New sweet cancelled");
-#endif
         return;
     }
 
@@ -292,9 +280,7 @@ void Mainwin::on_add_sweet_click() {
         fail = false;  // optimist!
         result = dialog->run();
         if (result != 1) {
-#ifdef __STATUSBAR
             msg->set_text("New sweet cancelled");
-#endif
             delete dialog;
             return;}
         try {
@@ -314,9 +300,7 @@ void Mainwin::on_add_sweet_click() {
     Sweet sweet{name, price};
     _store->add(sweet);
     on_list_sweets_click();
-#ifdef __STATUSBAR
     msg->set_text("Added " + sweet.name());
-#endif
 
 #ifdef __SENSITIVITY1
     reset_sensitivity();
@@ -326,9 +310,7 @@ void Mainwin::on_add_sweet_click() {
 void Mainwin::on_list_sweets_click() {
     if (_store->num_sweets() == 0) {
         data->set_markup("<span size='large' weight='bold'>No sweets have been defined yet</span>");
-#ifdef __STATUSBAR
         msg->set_text("");
-#endif
         return;
     }
 
@@ -338,9 +320,7 @@ void Mainwin::on_list_sweets_click() {
         s += _store->sweet(i).name() + "  $" + std::to_string(_store->sweet(i).price()) + "\n";
     s += "</span>";
     data->set_markup(s);
-#ifdef __STATUSBAR
     msg->set_text("");
-#endif
 }
 
 void Mainwin::on_about_click() {
