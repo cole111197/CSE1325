@@ -57,6 +57,9 @@ Mainwin::Mainwin(Store& store) : _store{&store} {
     ordersmenu->append(*menuitem_place_order);
 
     //         L I S T
+    menuitem_list_orders = Gtk::manage(new Gtk::MenuItem("_List", true));
+    menuitem_list_orders->signal_activate().connect([this] {this->on_list_orders_click();});
+    ordersmenu->append(*menuitem_list_orders);
 
 //////     S W E E T S
     // Create a Sweets menu and add to the menu bar
@@ -213,6 +216,7 @@ void Mainwin::on_place_order_click() {
         }
         order.add(quantity, _store->sweet(sweet_index));
         _store->add(order);
+        msg->set_text("Order #" + std::to_string(_store->num_orders()-1) + " placed: " + name + " x " + std::to_string(quantity));
     }
 }
 
@@ -305,6 +309,41 @@ void Mainwin::on_add_sweet_click() {
 #ifdef __SENSITIVITY1
     reset_sensitivity();
 #endif
+}
+
+void Mainwin::on_list_orders_click(){
+    if(_store->num_orders() == 0){
+        data->set_markup("<span size='large' weight='bold'>No orders have been defined yet</span>");
+        msg->set_text("");
+        return;
+    }
+
+    std::string prompt;
+    if(_store->num_orders() == 1){
+        prompt = "Enter order number: 0";
+    } else {
+        prompt = "Enter order number: 0-" + std::to_string(_store->num_orders()-1);
+    }
+    EntryDialog dialog{*this, prompt};
+    try{
+        dialog.run();
+        int index = std::stoi(dialog.get_text());
+        if(index < 0 || index > _store->num_orders()-1){
+            throw std::exception();
+        }
+        std::string s = "<span size='large' weight='bold'>";
+        s += "Order #" + std::to_string(index) + ":\n";
+        for(int i = 0; i < _store->order(index).size(); i++){
+            s += _store->order(index).sweet(i).name() + " x " + std::to_string( _store->order(index).quantity(i)) + "\n";
+        }
+        s += "\n";
+        s += "</span>";
+        data->set_markup(s);
+        msg->set_text("");
+    } catch(std::exception e){
+        msg->set_text("Invalid order number!");
+        dialog.hide();
+    }
 }
 
 void Mainwin::on_list_sweets_click() {

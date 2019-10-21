@@ -31,5 +31,6 @@
 *.out
 *.app
 
-# LibreOffice lock files
+# Program extras
 .~lock.*
+/.vscode/*
