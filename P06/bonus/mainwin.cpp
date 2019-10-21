@@ -124,6 +124,20 @@ Mainwin::Mainwin(Store& store) : _store{&store} {
     list_sweets_button->signal_clicked().connect([this] {this->on_list_sweets_click();});
     toolbar->append(*list_sweets_button);
 
+    //     P L A C E   O R D E R
+    Gtk::Image* place_order_image = Gtk::manage(new Gtk::Image{"order_place.png"});
+    place_order_button = Gtk::manage(new Gtk::ToolButton(*place_order_image));
+    place_order_button->set_tooltip_markup("Place a new order");
+    place_order_button->signal_clicked().connect([this] {this->on_place_order_click();});
+    toolbar->append(*place_order_button);
+
+    //     L I S T   O R D E R
+    Gtk::Image* list_orders_image = Gtk::manage(new Gtk::Image{"order_list.png"});
+    list_orders_button = Gtk::manage(new Gtk::ToolButton(*list_orders_image));
+    list_orders_button->set_tooltip_markup("List an order");
+    list_orders_button->signal_clicked().connect([this] {this->on_list_orders_click();});
+    toolbar->append(*list_orders_button);
+
     //     Q U I T
     // Add a icon for quitting
     Gtk::ToolButton *quit_button = Gtk::manage(new Gtk::ToolButton(Gtk::Stock::QUIT));
@@ -361,23 +375,21 @@ void Mainwin::on_list_sweets_click() {
 }
 
 void Mainwin::on_about_click() {
-#ifdef __RICHTEXT
-    Glib::ustring s = "<span size='36000' weight='bold'>Mav's Ultimate Sweet Shop " + VERSION + "</span>\n"
-        + "<span size='large'>Copyright 2019 by George F. Rice</span>\n\n"
-        + "<span size='small'>Licensed under the Gnu General Public License 3.0\n    https://www.gnu.org/licenses/gpl-3.0.en.html\n\n</span>"
-        + "<span size='small'>Candy photo created by Biscanski and donated to the public domain\n    https://pixnio.com/food-and-drink/desserts-cakes/sweet-color-sugar-gelatin-confectionery-delicious-food-candy\n\n</span>"
-        + "<span size='small'>Lollipop icon derived from http://pngimg.com/download/13817, used under Creative Commons 4.0 BY-NC\n\n</span>"
-        + "<span size='small'>Lollipops in Jar icon derived from https://www.pngfind.com/mpng/hxbTbow_jar-clipart-lollipop-lollipops-in-a-jar-hd/ under Personal Use Only license\n\n</span>";
-#else
-    Glib::ustring s = "Mav's Ultimate Sweet Shop " + VERSION
-        + "\nCopyright 2019 by George F. Rice\n\n"
-        + "Licensed under the Gnu General Public License 3.0\n    https://www.gnu.org/licenses/gpl-3.0.en.html\n\n"
-        + "Candy photo created by Biscanski and donated to the public domain\n    https://pixnio.com/food-and-drink/desserts-cakes/sweet-color-sugar-gelatin-confectionery-delicious-food-candy\n\n"
-        + "Lollipop icon derived from http://pngimg.com/download/13817, used under Creative Commons 4.0 BY-NC\n\n"
-        + "Lollipops in Jar icon derived from https://www.pngfind.com/mpng/hxbTbow_jar-clipart-lollipop-lollipops-in-a-jar-hd/ under Personal Use Only license";
-#endif
-    Gtk::MessageDialog dlg(*this, s, true);
-    dlg.run();
+    Gtk::AboutDialog* about = Gtk::manage(new Gtk::AboutDialog());
+    about->set_deletable(true);
+    std::vector<Glib::ustring> artists;
+    artists.push_back("Candy photo created by Biscanski and donated to the public domain\nhttps://pixnio.com/food-and-drink/desserts-cakes/sweet-color-sugar-gelatin-confectionery-delicious-food-candy");
+    artists.push_back("Lollipop icon derived from http://pngimg.com/download/13817, used under Creative Commons 4.0 BY-NC");
+    artists.push_back("Lollipops in Jar icon derived from https://www.pngfind.com/mpng/hxbTbow_jar-clipart-lollipop-lollipops-in-a-jar-hd/ under Personal Use Only license");
+    artists.push_back("Clipboard icon derived from https://www.iconfinder.com/icons/314893/list_notebook_icon under Free for commercial use license");
+
+    about->set_program_name("Mav's Ultimate Sweet Shop");
+    about->set_version(VERSION);
+    about->set_copyright("Copyright 2019 by Cole Montgomery");
+    about->set_license("Licensed under the Gnu General Public License 3.0\nhttps://www.gnu.org/licenses/gpl-3.0.en.html");
+    about->set_artists(artists);
+
+    about->run();
 }
 
 // /////////////////
@@ -390,4 +402,6 @@ void Mainwin::reset_sensitivity() {
     menuitem_list_orders->set_sensitive(_store->num_orders() > 0);
 
     list_sweets_button->set_sensitive(_store->num_sweets() > 0);
+    place_order_button->set_sensitive(_store->num_sweets() > 0);
+    list_orders_button->set_sensitive(_store->num_orders() > 0);
 }
