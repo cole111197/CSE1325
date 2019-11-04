@@ -3,6 +3,7 @@
 
 #include "dog_breed.h"
 #include "gender.h"
+#include "animal.h"
 #include <string>
 
 class Dog : public Animal{
@@ -11,6 +12,8 @@ class Dog : public Animal{
         ~Dog();
         std::string family() override;
         std::string breed() override;
+    private:
+        Dog_breed _breed;
 };
 
 #endif

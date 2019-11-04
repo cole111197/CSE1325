@@ -1,9 +1,9 @@
-
 #ifndef __ANIMAL_H
 #define __ANIMAL_H
 
 #include "gender.h"
 #include <string>
+#include <iostream>
 
 //TODO: Change age to a date (Make date class?) and have age() calculate and return current age
 
@@ -16,11 +16,11 @@ class Animal{
         std::string name();
         Gender gender();
         int age();
-        std::string to_string();
+        virtual std::string to_string() = 0;
     protected:
         std::string _name;
         Gender _gender;
         int _age;
 };
-
+//std::ostream& operator<<(std::ostream& os, const Animal& an);
 #endif
