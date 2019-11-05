@@ -3,8 +3,7 @@
 
 enum class Gender {
     MALE,
-    FEMALE,
-    NONE
+    FEMALE
 };
 
 #endif

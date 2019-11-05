@@ -2,6 +2,8 @@
 
 Animal::Animal(std::string name, Gender gender, int age) : _name{name}, _gender{gender}, _age{age} {}
 
+Animal::~Animal() {}
+
 std::string Animal::name(){
     return _name;
 }
@@ -14,9 +16,6 @@ int Animal::age(){
     return _age;
 }
 
-std::string Animal::to_string(){
-    return "ANIMAL";
-}
 /*
 //CALLS Animal::to_string()
 std::ostream& operator<<(std::ostream& ost, const Animal& an){

@@ -2,6 +2,8 @@
 
 Dog::Dog(Dog_breed breed, std::string name, Gender gender, int age) : Animal(name, gender, age), _breed{breed} {}
 
+Dog::~Dog() {}
+
 std::string Dog::family(){
     return "dog";
 }
@@ -26,4 +28,8 @@ std::string Dog::breed(){
     } else {
         return "UNKNOWN";
     }
+}
+
+std::string Dog::to_string(){
+    return "dog";
 }
