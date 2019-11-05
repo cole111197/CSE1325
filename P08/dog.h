@@ -12,7 +12,6 @@ class Dog : public Animal{
         ~Dog();
         std::string family() override;
         std::string breed() override;
-        std::string to_string() override;
     private:
         Dog_breed _breed;
 };

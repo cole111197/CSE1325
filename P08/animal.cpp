@@ -16,10 +16,23 @@ int Animal::age(){
     return _age;
 }
 
-/*
-//CALLS Animal::to_string()
-std::ostream& operator<<(std::ostream& ost, const Animal& an){
-    ost << an.to_string();
+std::string Animal::to_string(){
+    std::string gen;
+    if(gender() == Gender::MALE){
+        gen = "Male";
+    } else {
+        gen = "Female";
+    }
+    return "Name: " + name() + ", Gender: " + gen + ", Age: " + std::to_string(age());
+}
+
+std::ostream& operator<<(std::ostream& ost, const Animal& animal){
+    std::string gen;
+    if(animal._gender == Gender::MALE){
+        gen = "Male";
+    } else {
+        gen = "Female";
+    }
+    ost << "Name: " << animal._name << ", Gender: " << gen << ", Age: " << std::to_string(animal._age);
     return ost;
 }
-*/

@@ -17,6 +17,8 @@ class Mainwin : public Gtk::Window {
 		Shelter* shelter;
 		Gtk::Label* data;
 		Gtk::Label* msg;
+		Gtk::MenuItem* menuitem_animal_new;
+		Gtk::MenuItem* menuitem_animal_list;
 };
 
 #endif

@@ -1,4 +1,5 @@
 #include "mainwin.h"
+#include <iostream>
 
 Mainwin::Mainwin(){
     set_default_size(640, 480);
@@ -32,14 +33,23 @@ Mainwin::Mainwin(){
     menuitem_animal->set_submenu(*animalmenu);
 
     // Add New to Animal menu
-    Gtk::MenuItem* menuitem_animal_new = Gtk::manage(new Gtk::MenuItem("_New", true));
+    menuitem_animal_new = Gtk::manage(new Gtk::MenuItem("_New", true));
     menuitem_animal_new->signal_activate().connect([this] {this->on_new_animal_click();});
     animalmenu->append(*menuitem_animal_new);
 
     // Add List Available to Animal menu
-    Gtk::MenuItem* menuitem_animal_list = Gtk::manage(new Gtk::MenuItem("_List Available", true));
-    //menuitem_animal_list->signal_activate().connect([this] {this->???;});
+    menuitem_animal_list = Gtk::manage(new Gtk::MenuItem("_List Available", true));
+    menuitem_animal_list->signal_activate().connect([this] {this->on_list_animals_click();});
     animalmenu->append(*menuitem_animal_list);
+
+    data = Gtk::manage(new Gtk::Label());
+    data->set_hexpand(true);
+    data->set_vexpand(true);
+    vbox->add(*data);
+
+    msg = Gtk::manage(new Gtk::Label());
+    msg->set_hexpand(true);
+    vbox->add(*msg);
 
     vbox->show_all();
 }
@@ -56,14 +66,14 @@ void Mainwin::on_new_animal_click(){
     int age;
     Gtk::Dialog* dialog = new Gtk::Dialog{"Add a new animal", *this};
 
-    Gtk::HBox b_name;
+    Gtk::HBox b_name{true};
     Gtk::Label l_name{"Name:"};
     Gtk::Entry e_name;
     b_name.pack_start(l_name);
     b_name.pack_start(e_name);
     dialog->get_vbox()->pack_start(b_name, Gtk::PACK_SHRINK);
 
-    Gtk::HBox b_gender;
+    Gtk::HBox b_gender{true};
     Gtk::Label l_gender{"Gender:"};
     Gtk::ComboBoxText e_gender{false};
     e_gender.append("Male");
@@ -72,7 +82,7 @@ void Mainwin::on_new_animal_click(){
     b_gender.pack_start(e_gender);
     dialog->get_vbox()->pack_start(b_gender, Gtk::PACK_SHRINK);
 
-    Gtk::HBox b_age;
+    Gtk::HBox b_age{true};
     Gtk::Label l_age{"Age:"};
     Gtk::Entry e_age;
     b_age.pack_start(l_age);
@@ -85,8 +95,6 @@ void Mainwin::on_new_animal_click(){
 
     int result;
     bool fail = true;
-
-//sweet_dropdown->get_active_text()
 
     while (fail) {
         fail = false;
@@ -113,7 +121,18 @@ void Mainwin::on_new_animal_click(){
             gender = Gender::FEMALE;
         }
     }
-    Dog dog{Dog_breed::AUSTRALIAN_SHEPHERD, name, gender, age};
-    shelter->add_animal(dog);
+    Dog* dog = new Dog(Dog_breed::AUSTRALIAN_SHEPHERD, name, gender, age);
+    shelter->add_animal(*dog);
     delete dialog;
+    msg->set_text("New animal added");
+}
+
+void Mainwin::on_list_animals_click(){
+    std::ostringstream text;
+    for(int i = 0; i < shelter->num_animals(); i++){
+        text << shelter->animal(i) << "\n";
+    }
+
+    data->set_text(text.str());
+    msg->set_text("Animals listed");
 }
