@@ -1,5 +1,6 @@
 #include "mainwin.h"
 #include "dog.h"
+#include "cat.h"
 #include <sstream>
 
 Mainwin::Mainwin() : shelter{new Shelter{"Mavs Animal Shelter"}} {
@@ -92,56 +93,104 @@ void Mainwin::on_quit_click() {
 
 void Mainwin::on_new_animal_click() {
 
-    Gtk::Dialog dialog{"Dog Information", *this};
+    // /////////////
+    // S P E C I E S   S E L E C T I O N
 
-    Gtk::Grid grid;
+    std::string species;
 
-    Gtk::Label l_name{"Name"};
-    Gtk::Entry e_name;
-    grid.attach(l_name, 0, 0, 1, 1);
-    grid.attach(e_name, 1, 0, 2, 1);
+    Gtk::Dialog dialog_species{"Select type of animal", *this};
+    
+    Gtk::Grid grid_species;
 
-    Gtk::Label l_breed{"Breed"};
-    Gtk::ComboBoxText c_breed;
-    for(auto b : dog_breeds) c_breed.append(to_string(b));
-    c_breed.set_active(0);
-    grid.attach(l_breed, 0, 1, 1, 1);
-    grid.attach(c_breed, 1, 1, 2, 1);
+    Gtk::Label l_species{"Species"};
+    Gtk::ComboBoxText c_species;
+    c_species.append("Dog");
+    c_species.append("Cat");
+    c_species.set_active(0);
 
-    Gtk::Label l_gender{"Gender"};
-    Gtk::ComboBoxText c_gender;
-    c_gender.append("Female");
-    c_gender.append("Male");
-    c_gender.set_active(0);
-    grid.attach(l_gender, 0, 2, 1, 1);
-    grid.attach(c_gender, 1, 2, 2, 1);
+    grid_species.attach(l_species, 0, 0, 1, 1);
+    l_species.set_hexpand(true);
+    grid_species.attach(c_species, 1, 0, 2, 1);
+    c_species.set_hexpand(true);
 
-    Gtk::Label l_age{"Age"};
-    Gtk::SpinButton s_age;
-    s_age.set_range(0,99);
-    s_age.set_increments(1,5);
-    s_age.set_value(5);
-    grid.attach(l_age, 0, 3, 1, 1);
-    grid.attach(s_age, 1, 3, 2, 1);
+    dialog_species.get_content_area()->add(grid_species);
+    dialog_species.add_button("OK", 1);
+    dialog_species.add_button("Cancel", 0);
 
-    dialog.get_content_area()->add(grid);
+    dialog_species.show_all();
 
-    dialog.add_button("Add Dog", 1);
-    dialog.add_button("Cancel", 0);
+    int ret = dialog_species.run();
+    if(ret == 1){
+        dialog_species.close();
+        // /////////////
+        // A N I M A L   D E T A I L S
+        species = c_species.get_active_text();
 
-    dialog.show_all();
+        Gtk::Dialog dialog{species+" Information", *this};
 
-    while(dialog.run()) {
-        if(e_name.get_text().size() == 0) {e_name.set_text("*required*"); continue;}
-        Animal* animal = new Dog{dog_breeds[c_breed.get_active_row_number()], 
-                                 e_name.get_text(),
-                                 (c_gender.get_active_row_number() ? Gender::MALE : Gender::FEMALE),
-                                 static_cast<int>(s_age.get_value())};
-        shelter->add_animal(*animal);
-        std::ostringstream oss;
-        oss << "Added " << *animal;
-        status(oss.str());
-        break;
+        Gtk::Grid grid;
+
+        Gtk::Label l_name{"Name"};
+        Gtk::Entry e_name;
+        grid.attach(l_name, 0, 0, 1, 1);
+        grid.attach(e_name, 1, 0, 2, 1);
+
+        Gtk::Label l_breed{"Breed"};
+        Gtk::ComboBoxText c_breed;
+        if(species == "Dog"){
+            for(auto b : dog_breeds) c_breed.append(to_string(b));
+        } else if(species == "Cat"){
+            for(auto b : cat_breeds) c_breed.append(to_string(b));
+        }
+        c_breed.set_active(0);
+        grid.attach(l_breed, 0, 1, 1, 1);
+        grid.attach(c_breed, 1, 1, 2, 1);
+
+        Gtk::Label l_gender{"Gender"};
+        Gtk::ComboBoxText c_gender;
+        c_gender.append("Female");
+        c_gender.append("Male");
+        c_gender.set_active(0);
+        grid.attach(l_gender, 0, 2, 1, 1);
+        grid.attach(c_gender, 1, 2, 2, 1);
+
+        Gtk::Label l_age{"Age"};
+        Gtk::SpinButton s_age;
+        s_age.set_range(0,99);
+        s_age.set_increments(1,5);
+        s_age.set_value(5);
+        grid.attach(l_age, 0, 3, 1, 1);
+        grid.attach(s_age, 1, 3, 2, 1);
+
+        dialog.get_content_area()->add(grid);
+
+        dialog.add_button("Add "+species, 1);
+        dialog.add_button("Cancel", 0);
+
+        dialog.show_all();
+
+        while(dialog.run()) {
+            if(e_name.get_text().size() == 0) {e_name.set_text("*required*"); continue;}
+            Animal* animal;
+            if(species == "Dog"){
+                animal = new Dog{dog_breeds[c_breed.get_active_row_number()], 
+                    e_name.get_text(),
+                    (c_gender.get_active_row_number() ? Gender::MALE : Gender::FEMALE),
+                    static_cast<int>(s_age.get_value())};
+            } else if(species == "Cat"){
+                animal = new Cat{cat_breeds[c_breed.get_active_row_number()], 
+                    e_name.get_text(),
+                    (c_gender.get_active_row_number() ? Gender::MALE : Gender::FEMALE),
+                    static_cast<int>(s_age.get_value())};
+            }
+            shelter->add_animal(*animal);
+            std::ostringstream oss;
+            oss << "Added " << *animal;
+            status(oss.str());
+            break;
+        }
+    } else {
+        dialog_species.close();
     }
 }
 
