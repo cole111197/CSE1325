@@ -25,4 +25,3 @@ std::ostream& operator<<(std::ostream& ost, const Cat_breed& breed) {
     return ost;
 }
 
-

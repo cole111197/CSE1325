@@ -1,6 +1,7 @@
 #include "mainwin.h"
 #include "dog.h"
 #include "cat.h"
+#include "rabbit.h"
 #include <sstream>
 
 Mainwin::Mainwin() : shelter{new Shelter{"Mavs Animal Shelter"}} {
@@ -106,6 +107,7 @@ void Mainwin::on_new_animal_click() {
     Gtk::ComboBoxText c_species;
     c_species.append("Dog");
     c_species.append("Cat");
+    c_species.append("Rabbit");
     c_species.set_active(0);
 
     grid_species.attach(l_species, 0, 0, 1, 1);
@@ -141,6 +143,8 @@ void Mainwin::on_new_animal_click() {
             for(auto b : dog_breeds) c_breed.append(to_string(b));
         } else if(species == "Cat"){
             for(auto b : cat_breeds) c_breed.append(to_string(b));
+        } else if(species == "Rabbit"){
+            for(auto b : rabbit_breeds) c_breed.append(to_string(b));
         }
         c_breed.set_active(0);
         grid.attach(l_breed, 0, 1, 1, 1);
@@ -179,6 +183,11 @@ void Mainwin::on_new_animal_click() {
                     static_cast<int>(s_age.get_value())};
             } else if(species == "Cat"){
                 animal = new Cat{cat_breeds[c_breed.get_active_row_number()], 
+                    e_name.get_text(),
+                    (c_gender.get_active_row_number() ? Gender::MALE : Gender::FEMALE),
+                    static_cast<int>(s_age.get_value())};
+            } else if(species == "Rabbit"){
+                animal = new Rabbit{rabbit_breeds[c_breed.get_active_row_number()],
                     e_name.get_text(),
                     (c_gender.get_active_row_number() ? Gender::MALE : Gender::FEMALE),
                     static_cast<int>(s_age.get_value())};
