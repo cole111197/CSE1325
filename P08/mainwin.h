@@ -16,7 +16,7 @@ class Mainwin : public Gtk::Window {
 		void on_quit_click();
 		void on_new_animal_click();
 		void on_list_animals_click();
-		void on_new_click_click();
+		void on_new_client_click();
 		
 		void status(std::string s);
 	private:

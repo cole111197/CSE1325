@@ -1,4 +1,5 @@
 #include "mainwin.h"
+#include "client.h"
 #include "dog.h"
 #include "cat.h"
 #include "rabbit.h"
@@ -54,6 +55,19 @@ Mainwin::Mainwin() : shelter{new Shelter{"Mavs Animal Shelter"}} {
     Gtk::MenuItem *menuitem_listanimal = Gtk::manage(new Gtk::MenuItem("_List", true));
     menuitem_listanimal->signal_activate().connect([this] {this->on_list_animals_click();});
     animalmenu->append(*menuitem_listanimal);
+
+    //     C L I E N T
+    // Create a Client menu and add to the menu bar
+    Gtk::MenuItem* menuitem_client = Gtk::manage(new Gtk::MenuItem("_Client", true));
+    menubar->append(*menuitem_client);
+    Gtk::Menu* clientmenu = Gtk::manage(new Gtk::Menu());
+    menuitem_client->set_submenu(*clientmenu);
+
+    //           N E W
+    Gtk::MenuItem *menuitem_newclient = Gtk::manage(new Gtk::MenuItem("_New", true));
+    menuitem_newclient->signal_activate().connect([this] {this->on_new_client_click();});
+    clientmenu->append(*menuitem_newclient);
+
 
     // /////////////
     // T O O L B A R
@@ -210,6 +224,69 @@ void Mainwin::on_list_animals_click() {
     data->set_text(oss.str());
     status("");
 }      // List all animals
+
+void Mainwin::on_new_client_click(){
+    Gtk::Dialog dialog{"New client", *this};
+    //dialog.set_default_size(280, 180);
+
+    Gtk::Grid grid;
+
+    Gtk::Label n_label{"Name"};
+    Gtk::Entry n_entry;
+    Gtk::Label p_label{"Phone"};
+    Gtk::Entry p_entry;
+    Gtk::Label e_label{"Email"};
+    Gtk::Entry e_entry;
+    Gtk::Label errors{""};
+
+    grid.attach(n_label, 0, 0, 1, 1);
+    grid.attach(n_entry, 1, 0, 4, 1);
+    grid.attach(p_label, 0, 1, 1, 1);
+    grid.attach(p_entry, 1, 1, 4, 1);
+    grid.attach(e_label, 0, 2, 1, 1);
+    grid.attach(e_entry, 1, 2, 4, 1);
+    grid.attach(errors, 1, 3, 1, 1);
+
+    dialog.get_content_area()->add(grid);
+    //dialog.get_content_area()->add(errors);
+    dialog.add_button("OK", 1);
+    dialog.add_button("Cancel", 0);
+
+    dialog.show_all();
+    
+    int run = -1;
+    while(dialog.run() != 0){
+        std::string name;
+        std::string email;
+        std::string phone;
+        long long int phone_i;
+        try {
+            phone_i = std::stoll(p_entry.get_text());
+            if(n_entry.get_text().length() == 0){
+                errors.set_text("Error\nPlease enter name");
+            }else if(phone_i >= 10000000000 || phone_i < 1000000000){
+                errors.set_text("Error\nPhone format: AAABBBCCCC");
+            } else if(e_entry.get_text().length() == 0 || e_entry.get_text().find("@") == std::string::npos || e_entry.get_text().find(".") == std::string::npos){
+                errors.set_text("Error\nEmail format: a@b.c");
+            } else {
+                phone = std::to_string(phone_i);
+                name = n_entry.get_text();
+                email = e_entry.get_text();
+                Client* client = new Client{name, phone, email};
+                shelter->add_client(*client);
+                dialog.close();
+                std::ostringstream oss;
+                oss << "Added " << *client;
+                status(oss.str());
+                return;
+            }
+        } catch(std::exception e) {
+            errors.set_text("Error\nPhone format: AAABBBCCCC");
+        }
+
+    }
+    dialog.close();
+}
 
 // /////////////////
 // U T I L I T I E S
