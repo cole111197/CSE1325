@@ -2,6 +2,7 @@
 #define __CAT_H
 
 #include "animal.h"
+#include <map>
 
 enum class Cat_breed{
     PERSIAN,
@@ -13,18 +14,6 @@ enum class Cat_breed{
     SPHYNX,
     BALINESE
 };
-constexpr Cat_breed cat_breeds[] = {
-    Cat_breed::PERSIAN,
-    Cat_breed::SIAMESE,
-    Cat_breed::MAINE_COON,
-    Cat_breed::RAGDOLL,
-    Cat_breed::MUNCHKIN,
-    Cat_breed::RUSSIAN_BLUE,
-    Cat_breed::SPHYNX,
-    Cat_breed::BALINESE
-};
-std::string to_string(const Cat_breed& breed);
-std::ostream& operator<<(std::ostream& ost, const Cat_breed& breed);
 
 class Cat : public Animal {
     public:
@@ -32,6 +21,8 @@ class Cat : public Animal {
         virtual ~Cat();
         virtual std::string family() const override;
         virtual std::string breed() const override;
+
+        static std::map<Cat_breed, std::string> cat_breeds;
     private:
         Cat_breed _breed;
 };

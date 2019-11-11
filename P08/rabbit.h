@@ -2,6 +2,7 @@
 #define __RABBIT_H
 
 #include "animal.h"
+#include <map>
 
 enum class Rabbit_breed{
     HOLLAND,
@@ -13,18 +14,6 @@ enum class Rabbit_breed{
     PYGMY,
     POLISH
 };
-constexpr Rabbit_breed rabbit_breeds[] = {
-    Rabbit_breed::HOLLAND,
-    Rabbit_breed::FLEMISH_GIANT,
-    Rabbit_breed::REX,
-    Rabbit_breed::AMERICAN,
-    Rabbit_breed::MINI,
-    Rabbit_breed::COTTONTAIL,
-    Rabbit_breed::PYGMY,
-    Rabbit_breed::POLISH
-};
-std::string to_string(const Rabbit_breed& breed);
-std::ostream& operator<<(std::ostream& ost, const Rabbit_breed& breed);
 
 class Rabbit : public Animal {
     public:
@@ -32,6 +21,8 @@ class Rabbit : public Animal {
         virtual ~Rabbit();
         virtual std::string family() const override;
         virtual std::string breed() const override;
+
+        static std::map<Rabbit_breed, std::string> rabbit_breeds;
     private:
         Rabbit_breed _breed;
 };

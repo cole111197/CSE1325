@@ -82,7 +82,9 @@ Mainwin::Mainwin() : shelter{new Shelter{"Mavs Animal Shelter"}} {
     data = Gtk::manage(new Gtk::Label());
     data->set_hexpand(true);
     data->set_vexpand(true);
-    vbox->pack_start(*data, Gtk::PACK_EXPAND_WIDGET, 0);
+    Gtk::ScrolledWindow* scroller = Gtk::manage(new Gtk::ScrolledWindow);
+    scroller->add(*data);
+    vbox->pack_start(*scroller, Gtk::PACK_EXPAND_WIDGET, 0); // instead of packing *data directly
 
     // ///////////////////////////////////
     // S T A T U S   B A R   D I S P L A Y
@@ -154,11 +156,11 @@ void Mainwin::on_new_animal_click() {
         Gtk::Label l_breed{"Breed"};
         Gtk::ComboBoxText c_breed;
         if(species == "Dog"){
-            for(auto b : dog_breeds) c_breed.append(to_string(b));
+            for( auto& [ breed_enum, breed_string] : Dog::dog_breeds) c_breed.append(breed_string);
         } else if(species == "Cat"){
-            for(auto b : cat_breeds) c_breed.append(to_string(b));
+            for( auto& [ breed_enum, breed_string] : Cat::cat_breeds) c_breed.append(breed_string);
         } else if(species == "Rabbit"){
-            for(auto b : rabbit_breeds) c_breed.append(to_string(b));
+            for( auto& [ breed_enum, breed_string] : Rabbit::rabbit_breeds) c_breed.append(breed_string);
         }
         c_breed.set_active(0);
         grid.attach(l_breed, 0, 1, 1, 1);
@@ -191,17 +193,29 @@ void Mainwin::on_new_animal_click() {
             if(e_name.get_text().size() == 0) {e_name.set_text("*required*"); continue;}
             Animal* animal;
             if(species == "Dog"){
-                animal = new Dog{dog_breeds[c_breed.get_active_row_number()], 
+                Dog_breed temp_breed;
+                for(auto& [ breed_enum, breed_string ] : Dog::dog_breeds) {
+                    if(breed_string == c_breed.get_active_text()) temp_breed = breed_enum;
+                }
+                animal = new Dog{temp_breed,
                     e_name.get_text(),
                     (c_gender.get_active_row_number() ? Gender::MALE : Gender::FEMALE),
                     static_cast<int>(s_age.get_value())};
             } else if(species == "Cat"){
-                animal = new Cat{cat_breeds[c_breed.get_active_row_number()], 
+                Cat_breed temp_breed;
+                for(auto& [ breed_enum, breed_string ] : Cat::cat_breeds) {
+                    if(breed_string == c_breed.get_active_text()) temp_breed = breed_enum;
+                }
+                animal = new Cat{temp_breed,
                     e_name.get_text(),
                     (c_gender.get_active_row_number() ? Gender::MALE : Gender::FEMALE),
                     static_cast<int>(s_age.get_value())};
             } else if(species == "Rabbit"){
-                animal = new Rabbit{rabbit_breeds[c_breed.get_active_row_number()],
+                Rabbit_breed temp_breed;
+                for(auto& [ breed_enum, breed_string ] : Rabbit::rabbit_breeds) {
+                    if(breed_string == c_breed.get_active_text()) temp_breed = breed_enum;
+                }
+                animal = new Rabbit{temp_breed,
                     e_name.get_text(),
                     (c_gender.get_active_row_number() ? Gender::MALE : Gender::FEMALE),
                     static_cast<int>(s_age.get_value())};
