@@ -10,12 +10,12 @@ rebuild: clean all
 
 timet: threads FORCE
 	@printf '\nWith threads:\n'
-	time (./threads $(call args,4 10000000) > primes_threads.txt)
+	time (./threads $(call args,4 7000000) > primes_threads.txt)
 threads: threads.cpp
 	 $(CXX) $(CXXFLAGS) -pthread threads.cpp -o threads
 timep: primes FORCE
 	@printf 'Without threads:\n'
-	time (./primes $(call args,1 10000000) > primes.txt)
+	time (./primes $(call args,1 7000000) > primes.txt)
 primes: primes.cpp
 	 $(CXX) $(CXXFLAGS) -pthread primes.cpp -o primes
 clean:
