@@ -3,7 +3,7 @@
 
 #include "animal.h"
 #include <string>
-#include <vector> 
+#include <list> 
 #include <iostream>
 
 class Client {
@@ -17,7 +17,7 @@ class Client {
         std::string _name;
         std::string _phone;
         std::string _email;
-        std::vector<Animal*> _adopted;
+        std::list<Animal*> _adopted;
 };
 std::ostream& operator<<(std::ostream& ost, const Client& client);
 
