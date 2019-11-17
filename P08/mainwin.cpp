@@ -68,6 +68,10 @@ Mainwin::Mainwin() : shelter{new Shelter{"Mavs Animal Shelter"}} {
     menuitem_newclient->signal_activate().connect([this] {this->on_new_client_click();});
     clientmenu->append(*menuitem_newclient);
 
+    //           L I S T
+    Gtk::MenuItem *menuitem_listclients = Gtk::manage(new Gtk::MenuItem("_List", true));
+    menuitem_listclients->signal_activate().connect([this] {this->on_list_clients_click();});
+    clientmenu->append(*menuitem_listclients);
 
     // /////////////
     // T O O L B A R
@@ -240,66 +244,55 @@ void Mainwin::on_list_animals_click() {
 }      // List all animals
 
 void Mainwin::on_new_client_click(){
-    Gtk::Dialog dialog{"New client", *this};
-    //dialog.set_default_size(280, 180);
+    Gtk::Dialog dialog{"Client Information", *this};
 
     Gtk::Grid grid;
 
-    Gtk::Label n_label{"Name"};
-    Gtk::Entry n_entry;
-    Gtk::Label p_label{"Phone"};
-    Gtk::Entry p_entry;
-    Gtk::Label e_label{"Email"};
-    Gtk::Entry e_entry;
-    Gtk::Label errors{""};
+    Gtk::Label l_name{"Name"};
+    Gtk::Entry e_name;
+    grid.attach(l_name, 0, 0, 1, 1);
+    grid.attach(e_name, 1, 0, 2, 1);
 
-    grid.attach(n_label, 0, 0, 1, 1);
-    grid.attach(n_entry, 1, 0, 4, 1);
-    grid.attach(p_label, 0, 1, 1, 1);
-    grid.attach(p_entry, 1, 1, 4, 1);
-    grid.attach(e_label, 0, 2, 1, 1);
-    grid.attach(e_entry, 1, 2, 4, 1);
-    grid.attach(errors, 1, 3, 1, 1);
+    Gtk::Label l_phone{"Phone"};
+    Gtk::Entry e_phone;
+    grid.attach(l_phone, 0, 1, 1, 1);
+    grid.attach(e_phone, 1, 1, 2, 1);
+
+    Gtk::Label l_email{"Email"};
+    Gtk::Entry e_email;
+    grid.attach(l_email, 0, 2, 1, 1);
+    grid.attach(e_email, 1, 2, 2, 1);
 
     dialog.get_content_area()->add(grid);
-    //dialog.get_content_area()->add(errors);
-    dialog.add_button("OK", 1);
+
+    dialog.add_button("Add Client", 1);
     dialog.add_button("Cancel", 0);
 
     dialog.show_all();
-    
-    int run = -1;
-    while(dialog.run() != 0){
-        std::string name;
-        std::string email;
-        std::string phone;
-        long long int phone_i;
-        try {
-            phone_i = std::stoll(p_entry.get_text());
-            if(n_entry.get_text().length() == 0){
-                errors.set_text("Error\nPlease enter name");
-            }else if(phone_i >= 10000000000 || phone_i < 1000000000){
-                errors.set_text("Error\nPhone format: AAABBBCCCC");
-            } else if(e_entry.get_text().length() == 0 || e_entry.get_text().find("@") == std::string::npos || e_entry.get_text().find(".") == std::string::npos){
-                errors.set_text("Error\nEmail format: a@b.c");
-            } else {
-                phone = std::to_string(phone_i);
-                name = n_entry.get_text();
-                email = e_entry.get_text();
-                Client* client = new Client{name, phone, email};
-                shelter->add_client(*client);
-                dialog.close();
-                std::ostringstream oss;
-                oss << "Added " << *client;
-                status(oss.str());
-                return;
-            }
-        } catch(std::exception e) {
-            errors.set_text("Error\nPhone format: AAABBBCCCC");
-        }
 
+    while(dialog.run()) {
+        if (e_name.get_text().size() == 0) {e_name.set_text("*required*"); continue;}
+        if (e_phone.get_text().size() == 0) {e_phone.set_text("*required*"); continue;}
+        if (e_email.get_text().size() == 0) {e_email.set_text("*required*"); continue;}
+
+        Client* temp = new Client{e_name.get_text(), e_phone.get_text(), e_email.get_text()};
+        shelter->add_client(*temp);
+        std::ostringstream oss;
+        oss << "Added " << *temp;
+        status(oss.str());
+        break;
     }
-    dialog.close();
+}
+
+void Mainwin::on_list_clients_click(){
+    /*
+    std::ostringstream oss;
+    for(int i=0; i<shelter->num_clients(); ++i)
+        oss << shelter->client(i) << '\n'; 
+    data->set_text(oss.str());
+    status("");
+    */
+   shelter->adopt(shelter->client(0), shelter->animal(0));
 }
 
 // /////////////////

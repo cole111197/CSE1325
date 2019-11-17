@@ -1,4 +1,5 @@
 #include "shelter.h"
+#include <iostream>
 
 Shelter::Shelter(std::string name) : _name{name} {}
 
@@ -15,7 +16,15 @@ int Shelter::num_animals(){
 }
 
 Animal& Shelter::animal(int index){
-    return *(_available[index]);
+    //return *(_available[index]);
+    int i = 0;
+    for(std::list<Animal*>::iterator p = _available.begin(); p != _available.end(); p++){
+        if(i == index){
+            return **p;
+        } else {
+            i++;
+        }
+    }
 }
 
 void Shelter::add_client(Client& client){
@@ -27,5 +36,17 @@ int Shelter::num_clients(){
 }
 
 Client& Shelter::client(int index){
-    return *_clients[index];
+    int i = 0;
+    for(std::list<Client*>::iterator p = _clients.begin(); p != _clients.end(); p++){
+        if(i == index){
+            return **p;
+        } else {
+            i++;
+        }
+    }
+}
+
+void Shelter::adopt(Client& client, Animal& animal){
+    _available.remove(&animal);
+    client.adopt(animal);
 }
