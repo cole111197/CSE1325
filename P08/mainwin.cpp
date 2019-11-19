@@ -73,6 +73,11 @@ Mainwin::Mainwin() : shelter{new Shelter{"Mavs Animal Shelter"}} {
     menuitem_listclients->signal_activate().connect([this] {this->on_list_clients_click();});
     clientmenu->append(*menuitem_listclients);
 
+    //           A D O P T
+    Gtk::MenuItem *menuitem_adoptanimal = Gtk::manage(new Gtk::MenuItem("_Adopt Animal", true));
+    menuitem_adoptanimal->signal_activate().connect([this] {this->on_adopt_animal_click();});
+    clientmenu->append(*menuitem_adoptanimal);
+
     // /////////////
     // T O O L B A R
     // Add a toolbar to the vertical box below the menu
@@ -285,14 +290,55 @@ void Mainwin::on_new_client_click(){
 }
 
 void Mainwin::on_list_clients_click(){
-    /*
     std::ostringstream oss;
     for(int i=0; i<shelter->num_clients(); ++i)
         oss << shelter->client(i) << '\n'; 
     data->set_text(oss.str());
     status("");
-    */
-   shelter->adopt(shelter->client(0), shelter->animal(0));
+}
+
+void Mainwin::on_adopt_animal_click(){
+    Gtk::Dialog dialog{"Adopt Animal", *this};
+
+    Gtk::Grid grid;
+
+    Gtk::Label l_client{"Client"};
+    Gtk::ComboBoxText e_client;
+    grid.attach(l_client, 0, 0, 1, 1);
+    grid.attach(e_client, 1, 0, 2, 1);
+
+    for(int i = 0; i < shelter->num_clients(); i++){
+        std::ostringstream oss;
+        oss << shelter->client(i);
+        e_client.append(oss.str());
+    }
+
+    Gtk::Label l_animal{"Animal"};
+    Gtk::ComboBoxText e_animal;
+    grid.attach(l_animal, 0, 1, 1, 1);
+    grid.attach(e_animal, 1, 1, 2, 1);
+
+    for(int i = 0; i < shelter->num_animals(); i++){
+        std::ostringstream oss;
+        oss << shelter->animal(i);
+        e_animal.append(oss.str());
+    }
+
+    dialog.get_content_area()->add(grid);
+
+    dialog.add_button("Adopt Animal", 1);
+    dialog.add_button("Cancel", 0);
+
+    dialog.show_all();
+
+    while(dialog.run()) {
+        if(e_client.get_active_row_number() != -1 && e_animal.get_active_row_number() != -1){
+            std::cout << std::to_string(shelter->client(e_client.get_active_row_number()).num_adopted()) << std::endl;
+            shelter->adopt(shelter->client(e_client.get_active_row_number()), shelter->animal(e_animal.get_active_row_number()));
+            std::cout << std::to_string(shelter->client(e_client.get_active_row_number()).num_adopted()) << std::endl;
+        }
+        break;
+    }
 }
 
 // /////////////////
