@@ -56,6 +56,11 @@ Mainwin::Mainwin() : shelter{new Shelter{"Mavs Animal Shelter"}} {
     menuitem_listanimal->signal_activate().connect([this] {this->on_list_animals_click();});
     animalmenu->append(*menuitem_listanimal);
 
+    //           L I S T  A D O P T E D
+    Gtk::MenuItem *menuitem_listadopted = Gtk::manage(new Gtk::MenuItem("_List Adopted", true));
+    menuitem_listadopted->signal_activate().connect([this] {this->on_list_adopted_click();});
+    animalmenu->append(*menuitem_listadopted);
+
     //     C L I E N T
     // Create a Client menu and add to the menu bar
     Gtk::MenuItem* menuitem_client = Gtk::manage(new Gtk::MenuItem("_Client", true));
@@ -77,6 +82,12 @@ Mainwin::Mainwin() : shelter{new Shelter{"Mavs Animal Shelter"}} {
     Gtk::MenuItem *menuitem_adoptanimal = Gtk::manage(new Gtk::MenuItem("_Adopt Animal", true));
     menuitem_adoptanimal->signal_activate().connect([this] {this->on_adopt_animal_click();});
     clientmenu->append(*menuitem_adoptanimal);
+
+    //           L I S T  A D O P T E D
+    Gtk::MenuItem *menuitem_listadopted2 = Gtk::manage(new Gtk::MenuItem("_List Adopted", true));
+    menuitem_listadopted2->signal_activate().connect([this] {this->on_list_adopted_click();});
+    clientmenu->append(*menuitem_listadopted2);
+
 
     // /////////////
     // T O O L B A R
@@ -333,9 +344,42 @@ void Mainwin::on_adopt_animal_click(){
 
     while(dialog.run()) {
         if(e_client.get_active_row_number() != -1 && e_animal.get_active_row_number() != -1){
-            std::cout << std::to_string(shelter->client(e_client.get_active_row_number()).num_adopted()) << std::endl;
             shelter->adopt(shelter->client(e_client.get_active_row_number()), shelter->animal(e_animal.get_active_row_number()));
-            std::cout << std::to_string(shelter->client(e_client.get_active_row_number()).num_adopted()) << std::endl;
+        }
+        break;
+    }
+}
+
+void Mainwin::on_list_adopted_click(){
+    Gtk::Dialog dialog{"List Adopted Animals", *this};
+
+    Gtk::Grid grid;
+
+    Gtk::Label l_client{"Client"};
+    Gtk::ComboBoxText e_client;
+    grid.attach(l_client, 0, 0, 1, 1);
+    grid.attach(e_client, 1, 0, 2, 1);
+
+    for(int i = 0; i < shelter->num_clients(); i++){
+        std::ostringstream oss;
+        oss << shelter->client(i);
+        e_client.append(oss.str());
+    }
+    
+    dialog.get_content_area()->add(grid);
+
+    dialog.add_button("Choose Client", 1);
+    dialog.add_button("Cancel", 0);
+
+    dialog.show_all();
+
+    while(dialog.run()) {
+        if(e_client.get_active_row_number() != -1){
+            std::ostringstream oss;
+            for(int i = 0; i < shelter->client(e_client.get_active_row_number()).num_adopted(); i++){
+                oss << shelter->client(e_client.get_active_row_number()).animal(i) << std::endl;
+            }
+            data->set_text(oss.str());
         }
         break;
     }
