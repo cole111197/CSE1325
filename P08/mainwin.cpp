@@ -4,6 +4,7 @@
 #include "cat.h"
 #include "rabbit.h"
 #include <sstream>
+#include <fstream>
 
 Mainwin::Mainwin() : shelter{new Shelter{"Mavs Animal Shelter"}} {
 
@@ -31,11 +32,22 @@ Mainwin::Mainwin() : shelter{new Shelter{"Mavs Animal Shelter"}} {
     Gtk::Menu *filemenu = Gtk::manage(new Gtk::Menu());
     menuitem_file->set_submenu(*filemenu);
 
+    //         S A V E
+    Gtk::MenuItem* menuitem_file_save = Gtk::manage(new Gtk::MenuItem("_Save", true));
+    menuitem_file_save->signal_activate().connect([this] {this->on_save_click();});
+    filemenu->append(*menuitem_file_save);
+
     //         Q U I T
     // Append Quit to the File menu
     Gtk::MenuItem *menuitem_quit = Gtk::manage(new Gtk::MenuItem("_Quit", true));
     menuitem_quit->signal_activate().connect([this] {this->on_quit_click();});
     filemenu->append(*menuitem_quit);
+
+#ifdef __DEBUG
+    Gtk::MenuItem *menuitem_test = Gtk::manage(new Gtk::MenuItem("_Test", true));
+    menuitem_test->signal_activate().connect([this] {this->on_test_click();});
+    filemenu->append(*menuitem_test);
+#endif
 
     //     A N I M A L
     // Create an Animal menu and add to the menu bar
@@ -384,6 +396,44 @@ void Mainwin::on_list_adopted_click(){
         break;
     }
 }
+
+void Mainwin::on_save_click(){
+    try {
+        std::ofstream ofs{"untitled.mass"};
+        shelter->save(ofs);
+    } catch(std::exception e) {
+        Gtk::MessageDialog{*this, "Unable to save data", false, Gtk::MESSAGE_ERROR}.run();
+    }
+}
+
+#ifdef __DEBUG
+void Mainwin::on_test_click(){
+    //shelter->add_animal()
+    Dog* d1 = new Dog{Dog_breed::DACHSHUND, "Izzy", Gender::FEMALE, 7};
+    Dog* d2 = new Dog{Dog_breed::MIX, "Reet", Gender::MALE, 3};
+    Cat* c1 = new Cat{Cat_breed::RUSSIAN_BLUE, "Maude", Gender::FEMALE, 5};
+    Cat* c2 = new Cat{Cat_breed::SIAMESE, "Kitty", Gender::MALE, 16};
+    Rabbit* r1 = new Rabbit{Rabbit_breed::AMERICAN, "Rabbi", Gender::FEMALE, 1};
+    Rabbit* r2 = new Rabbit{Rabbit_breed::PYGMY, "Goober", Gender::MALE, 2};
+    shelter->add_animal(*d1);
+    shelter->add_animal(*d2);
+    shelter->add_animal(*c1);
+    shelter->add_animal(*c2);
+    shelter->add_animal(*r1);
+    shelter->add_animal(*r2);
+    //shelter->add_client()
+    Client* cl1 = new Client{"Cole", "9723987873", "cole111197@gmail.com"};
+    Client* cl2 = new Client{"David", "2145358098", "davidmontgomery59@yahoo.com"};
+    Client* cl3 = new Client{"Patty", "2142363857", "pattymontgomery@verizon.net"};
+    Client* cl4 = new Client{"Paige", "2145555555", "paige_martinez@gmail.com"};
+    shelter->add_client(*cl1);
+    shelter->add_client(*cl2);
+    shelter->add_client(*cl3);
+    shelter->add_client(*cl4);
+    //shelter->adopt(shelter->client(#), shelter->animal(#))
+
+}
+#endif
 
 // /////////////////
 // U T I L I T I E S

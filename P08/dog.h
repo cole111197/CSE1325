@@ -3,6 +3,7 @@
 
 #include "animal.h"
 #include <map>
+#include <ostream>
 
 // List of dog breeds, conversion to/from string and stream, and iteration
 enum class Dog_breed {
@@ -27,6 +28,8 @@ class Dog : public Animal {
     virtual ~Dog();
     virtual std::string family() const override;
     virtual std::string breed() const override;
+    
+    virtual void save(std::ostream& ost) override;
 
     static std::map<Dog_breed, std::string> dog_breeds;
   private:

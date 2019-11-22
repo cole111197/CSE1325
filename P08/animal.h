@@ -12,6 +12,8 @@ class Animal {
     Animal(std::string name, Gender gender, int age);
     virtual ~Animal();
 
+    virtual void save(std::ostream& ost);
+
     virtual std::string family() const = 0;
     virtual std::string breed() const = 0;
     std::string name() const;

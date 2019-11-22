@@ -18,10 +18,15 @@ class Shelter{
         int num_clients();
         Client& client(int index);
         void adopt(Client& client, Animal& animal);
+
+        void set_filename(std::string filename);
+        std::string filename();
+        void save(std::ostream& ost);
     private:
         std::string _name;
         std::list<Animal*> _available;
         std::list<Client*> _clients;
+        std::string _filename;
 };
 
 #endif

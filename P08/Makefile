@@ -1,6 +1,9 @@
 CXXFLAGS += --std=c++17
 GTKFLAGS = `/usr/bin/pkg-config gtkmm-3.0 --cflags --libs`
 
+debug: CXXFLAGS += -D__DEBUG
+debug: shelter
+
 all: shelter
 
 shelter: main.o mainwin.o shelter.o animal.o dog.o cat.o rabbit.o client.o *.h
@@ -23,4 +26,5 @@ client.o: client.cpp *.h
 	$(CXX) $(CXXFLAGS) -c client.cpp -o client.o
 clean:
 	rm -f *.o *.gch shelter
-
+debug: main.o mainwin.o shelter.o animal.o dog.o cat.o rabbit.o client.o *.h
+	$(CXX) $(CXXFLAGS) $(DBGFLAGS) main.o mainwin.o shelter.o animal.o dog.o cat.o rabbit.o client.o $(GTKFLAGS) -o shelter

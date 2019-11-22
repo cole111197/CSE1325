@@ -50,3 +50,19 @@ void Shelter::adopt(Client& client, Animal& animal){
     _available.remove(&animal);
     client.adopt(animal);
 }
+
+void Shelter::set_filename(std::string filename){
+    _filename = filename;
+}
+
+std::string Shelter::filename(){
+    return _filename;
+}
+
+void Shelter::save(std::ostream& ost){
+    ost << _name << std::endl;
+    ost << std::to_string(_available.size()) << std::endl;
+    for(std::list<Animal*>::iterator it = _available.begin(); it != _available.end(); it++){
+        (*it)->save(ost);
+    }
+}

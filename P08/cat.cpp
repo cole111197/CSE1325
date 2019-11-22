@@ -15,6 +15,12 @@ std::map<Cat_breed, std::string> Cat::cat_breeds = {
     {Cat_breed::BALINESE, "Balinese"}
     };
 
+void Cat::save(std::ostream& ost){
+    ost << family() << std::endl;
+    ost << breed() << std::endl;
+    Animal::save(ost);
+}
+
 std::string Cat::family() const {return "cat";}
 std::string Cat::breed() const {return cat_breeds[_breed];}
 

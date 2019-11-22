@@ -22,6 +22,8 @@ class Cat : public Animal {
         virtual std::string family() const override;
         virtual std::string breed() const override;
 
+        virtual void save(std::ostream& ost) override;
+
         static std::map<Cat_breed, std::string> cat_breeds;
     private:
         Cat_breed _breed;

@@ -19,6 +19,12 @@ std::map<Dog_breed, std::string> Dog::dog_breeds = {
       {Dog_breed::TERRIER, "Terrier"}
     };
 
+void Dog::save(std::ostream& ost){
+    ost << family() << std::endl;
+    ost << breed() << std::endl;
+    Animal::save(ost);
+}
+
 // Overrides for pure virtual methods
 std::string Dog::family() const {return "dog";}
 std::string Dog::breed() const {return dog_breeds[_breed];}

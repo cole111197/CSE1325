@@ -6,6 +6,12 @@ Animal::Animal(std::string name, Gender gender, int age)
 
 Animal::~Animal() { }
 
+void Animal::save(std::ostream& ost){
+    ost << _name << std::endl;
+    ost << ::to_string(_gender) << std::endl;
+    ost << _age << std::endl;
+}
+
 // Getters
 std::string Animal::name() const {return _name;}
 Gender Animal::gender() const {return _gender;}
