@@ -4,6 +4,16 @@
 Animal::Animal(std::string name, Gender gender, int age)
     : _name{name}, _gender{gender}, _age{age} { }
 
+Animal::Animal(std::istream& ist){
+    std::getline(ist, _name);
+    std::string gen;
+    std::getline(ist, gen);
+    _gender = ((gen == "male") ? Gender::MALE : Gender::FEMALE);
+    std::string agestr;
+    std::getline(ist, agestr);
+    _age = std::stoi(agestr);
+}
+
 Animal::~Animal() { }
 
 void Animal::save(std::ostream& ost){

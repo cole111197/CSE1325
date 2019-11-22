@@ -18,6 +18,7 @@ enum class Cat_breed{
 class Cat : public Animal {
     public:
         Cat(Cat_breed breed, std::string name, Gender gender, int age);
+        Cat(std::istream& ist);
         virtual ~Cat();
         virtual std::string family() const override;
         virtual std::string breed() const override;

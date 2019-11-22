@@ -4,6 +4,17 @@ Cat::Cat(Cat_breed breed, std::string name, Gender gender, int age)
     : Animal(name, gender, age), _breed{breed} { }
 Cat::~Cat() { }
 
+Cat::Cat(std::istream& ist) : Animal(ist){
+    std::string breed_temp;
+    std::getline(ist, breed_temp);
+    for(std::map<Cat_breed, std::string>::iterator it = cat_breeds.begin(); it != cat_breeds.end(); it++){
+        if(it->second == breed_temp){
+            _breed = it->first;
+            it = cat_breeds.end();
+        }
+    }
+}
+
 std::map<Cat_breed, std::string> Cat::cat_breeds = {
     {Cat_breed::PERSIAN, "Persian"},
     {Cat_breed::SIAMESE, "Siamese"},
@@ -17,8 +28,8 @@ std::map<Cat_breed, std::string> Cat::cat_breeds = {
 
 void Cat::save(std::ostream& ost){
     ost << family() << std::endl;
-    ost << breed() << std::endl;
     Animal::save(ost);
+    ost << breed() << std::endl;
 }
 
 std::string Cat::family() const {return "cat";}

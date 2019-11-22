@@ -1,7 +1,7 @@
 #ifndef __ANIMAL_H
 #define __ANIMAL_H
 
-#include <ostream>
+#include <iostream>
 
 enum class Gender{FEMALE, MALE};
 std::string to_string(Gender gender);
@@ -10,6 +10,7 @@ std::ostream& operator<<(std::ostream& ost, const Gender& gender);
 class Animal {
   public:
     Animal(std::string name, Gender gender, int age);
+    Animal(std::istream& ist);
     virtual ~Animal();
 
     virtual void save(std::ostream& ost);

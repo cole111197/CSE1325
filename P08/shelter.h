@@ -5,10 +5,12 @@
 #include "client.h"
 #include <string>
 #include <list>
+#include <iostream>
 
 class Shelter{
     public:
         Shelter(std::string name);
+        Shelter(std::istream& ist);
 
         std::string name();
         void add_animal(Animal& animal);

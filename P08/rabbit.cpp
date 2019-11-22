@@ -4,6 +4,17 @@ Rabbit::Rabbit(Rabbit_breed breed, std::string name, Gender gender, int age)
     : Animal(name, gender, age), _breed{breed} { }
 Rabbit::~Rabbit() { }
 
+Rabbit::Rabbit(std::istream& ist) : Animal(ist){
+    std::string breed_temp;
+    std::getline(ist, breed_temp);
+    for(std::map<Rabbit_breed, std::string>::iterator it = rabbit_breeds.begin(); it != rabbit_breeds.end(); it++){
+        if(it->second == breed_temp){
+            _breed = it->first;
+            it = rabbit_breeds.end();
+        }
+    }
+}
+
 std::map<Rabbit_breed, std::string> Rabbit::rabbit_breeds = {
     {Rabbit_breed::HOLLAND, "Holland"},
     {Rabbit_breed::FLEMISH_GIANT, "Flemish Giant"},
@@ -17,8 +28,8 @@ std::map<Rabbit_breed, std::string> Rabbit::rabbit_breeds = {
 
 void Rabbit::save(std::ostream& ost){
     ost << family() << std::endl;
-    ost << breed() << std::endl;
     Animal::save(ost);
+    ost << breed() << std::endl;
 }
 
 std::string Rabbit::family() const {return "rabbit";}

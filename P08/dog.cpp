@@ -4,6 +4,17 @@
 Dog::Dog(Dog_breed breed, std::string name, Gender gender, int age) : Animal(name, gender, age), _breed{breed}{ }
 Dog::~Dog() { }
 
+Dog::Dog(std::istream& ist) : Animal(ist){
+    std::string breed_temp;
+    std::getline(ist, breed_temp);
+    for(std::map<Dog_breed, std::string>::iterator it = dog_breeds.begin(); it != dog_breeds.end(); it++){
+        if(it->second == breed_temp){
+            _breed = it->first;
+            it = dog_breeds.end();
+        }
+    }
+}
+
 std::map<Dog_breed, std::string> Dog::dog_breeds = {
       {Dog_breed::BEAGLE, "Beagle"},
       {Dog_breed::BOXER, "Boxer"},
@@ -21,8 +32,8 @@ std::map<Dog_breed, std::string> Dog::dog_breeds = {
 
 void Dog::save(std::ostream& ost){
     ost << family() << std::endl;
-    ost << breed() << std::endl;
     Animal::save(ost);
+    ost << breed() << std::endl;
 }
 
 // Overrides for pure virtual methods

@@ -21,6 +21,8 @@ class Mainwin : public Gtk::Window {
 		void on_adopt_animal_click();
 		void on_list_adopted_click();
 		void on_save_click();
+		void on_open_click();
+		void on_new_shelter_click();
 #ifdef __DEBUG
 		void on_test_click();
 #endif

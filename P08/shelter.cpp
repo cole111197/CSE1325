@@ -1,7 +1,29 @@
 #include "shelter.h"
-#include <iostream>
+#include "dog.h"
+#include "cat.h"
+#include "rabbit.h"
 
 Shelter::Shelter(std::string name) : _name{name} {}
+
+Shelter::Shelter(std::istream& ist){
+    std::getline(ist, _name);
+    std::string animal_count;
+    std::getline(ist, animal_count);
+    for(int i = 0; i < std::stoi(animal_count); i++){
+        std::string type;
+        std::getline(ist, type);
+        if(type == "dog"){
+            Dog* dog = new Dog(ist);
+            add_animal(*dog);
+        } else if(type == "cat"){
+            Cat* cat = new Cat(ist);
+            add_animal(*cat);
+        } else if(type == "rabbit"){
+            Rabbit* rabbit = new Rabbit(ist);
+            add_animal(*rabbit);
+        }
+    }
+}
 
 std::string Shelter::name(){
     return _name;
