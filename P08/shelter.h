@@ -24,6 +24,7 @@ class Shelter{
         void set_filename(std::string filename);
         std::string filename();
         void save(std::ostream& ost);
+        bool valid(std::istream& ist, std::string animal_count);
     private:
         std::string _name;
         std::list<Animal*> _available;

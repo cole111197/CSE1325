@@ -2,26 +2,56 @@
 #include "dog.h"
 #include "cat.h"
 #include "rabbit.h"
+#include <sstream>
 
 Shelter::Shelter(std::string name) : _name{name} {}
 
 Shelter::Shelter(std::istream& ist){
-    std::getline(ist, _name);
+    std::string name_check;
+    if(!(getline (ist, name_check))){
+        throw -1;
+    }
+    _name = name_check;
     std::string animal_count;
     std::getline(ist, animal_count);
-    for(int i = 0; i < std::stoi(animal_count); i++){
-        std::string type;
-        std::getline(ist, type);
-        if(type == "dog"){
-            Dog* dog = new Dog(ist);
-            add_animal(*dog);
-        } else if(type == "cat"){
-            Cat* cat = new Cat(ist);
-            add_animal(*cat);
-        } else if(type == "rabbit"){
-            Rabbit* rabbit = new Rabbit(ist);
-            add_animal(*rabbit);
+    bool good = valid(ist, animal_count);
+    ist.clear();
+    ist.seekg(0, ist.beg);
+    std::string trash;          //used to skip lines
+    std::getline(ist, trash);   //skip line where name is
+    std::getline(ist, trash);   //skip line where animal count is
+    if(!good){
+        throw -1;
+    } else {
+        for(int i = 0; i < std::stoi(animal_count); i++){
+            std::string type;
+            std::getline(ist, type);
+            if(type == "dog"){
+                Dog* dog = new Dog(ist);
+                add_animal(*dog);
+            } else if(type == "cat"){
+                Cat* cat = new Cat(ist);
+                add_animal(*cat);
+            } else if(type == "rabbit"){
+                Rabbit* rabbit = new Rabbit(ist);
+                add_animal(*rabbit);
+            }
         }
+    }
+}
+
+
+bool Shelter::valid(std::istream& ist, std::string animal_count){
+    int num_lines = 0;
+    std::string temp;
+    while(std::getline(ist, temp)){
+        num_lines++;
+    }
+    try{
+        int count = std::stoi(animal_count);
+        return (num_lines == count*5);
+    } catch(std::invalid_argument e){
+        return false;
     }
 }
 

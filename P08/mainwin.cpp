@@ -411,18 +411,27 @@ void Mainwin::on_save_click(){
     try {
         std::ofstream ofs{"untitled.mass"};
         shelter->save(ofs);
+        ofs.close();
     } catch(std::exception e) {
         Gtk::MessageDialog{*this, "Unable to save data", false, Gtk::MESSAGE_ERROR}.run();
     }
 }
 
 void Mainwin::on_open_click(){
-    try {
-        std::ifstream ifs{"untitled.mass"};
-        delete shelter;
-        shelter = new Shelter(ifs);
-    } catch(std::exception e) {
-        Gtk::MessageDialog{*this, "Unable to open data", false, Gtk::MESSAGE_ERROR}.run();
+    std::ifstream ifs{"untitled.mass"};
+    if(ifs){
+        try {
+            Shelter* old = shelter;
+            shelter = new Shelter(ifs);
+            delete old;
+            ifs.close();
+        } catch(int x){
+            if(x == -1){
+                Gtk::MessageDialog{*this, "Error: Incorrect line count", false, Gtk::MESSAGE_ERROR}.run();
+            }
+        }
+    } else {
+        Gtk::MessageDialog{*this, "Error: Could not open file", false, Gtk::MESSAGE_ERROR}.run();
     }
 }
 
