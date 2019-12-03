@@ -21,13 +21,16 @@ class Mainwin : public Gtk::Window {
 		void on_adopt_animal_click();
 		void on_list_adopted_click();
 		void on_save_click();
+		void on_save_as_click();
 		void on_open_click();
 		void on_new_shelter_click();
+		void on_about_click();
 #ifdef __DEBUG
 		void on_test_click();
 #endif
 
 		void status(std::string s);
+		bool all_data_saved();
 	private:
 		Shelter* shelter;
 		Gtk::Label* data;

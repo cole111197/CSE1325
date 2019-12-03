@@ -25,11 +25,13 @@ class Shelter{
         std::string filename();
         void save(std::ostream& ost);
         bool valid(std::istream& ist, std::string animal_count);
+        bool saved();
     private:
         std::string _name;
         std::list<Animal*> _available;
         std::list<Client*> _clients;
         std::string _filename;
+        bool _dirty;
 };
 
 #endif

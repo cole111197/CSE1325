@@ -4,7 +4,9 @@
 #include "rabbit.h"
 #include <sstream>
 
-Shelter::Shelter(std::string name) : _name{name} {}
+Shelter::Shelter(std::string name) : _filename{"untitled.mass"}, _name{name} {
+    _dirty = false;
+}
 
 Shelter::Shelter(std::istream& ist){
     std::string name_check;
@@ -37,6 +39,7 @@ Shelter::Shelter(std::istream& ist){
                 add_animal(*rabbit);
             }
         }
+        _dirty = true;
     }
 }
 
@@ -61,6 +64,7 @@ std::string Shelter::name(){
 
 void Shelter::add_animal(Animal& animal){
     _available.push_back(&animal);
+    _dirty = true;
 }
 
 int Shelter::num_animals(){
@@ -101,6 +105,7 @@ Client& Shelter::client(int index){
 void Shelter::adopt(Client& client, Animal& animal){
     _available.remove(&animal);
     client.adopt(animal);
+    _dirty = true;
 }
 
 void Shelter::set_filename(std::string filename){
@@ -117,4 +122,9 @@ void Shelter::save(std::ostream& ost){
     for(std::list<Animal*>::iterator it = _available.begin(); it != _available.end(); it++){
         (*it)->save(ost);
     }
+    _dirty = false;
+}
+
+bool Shelter::saved(){
+    return !_dirty;
 }

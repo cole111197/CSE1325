@@ -42,6 +42,11 @@ Mainwin::Mainwin() : shelter{new Shelter{"Mavs Animal Shelter"}} {
     menuitem_file_save->signal_activate().connect([this] {this->on_save_click();});
     filemenu->append(*menuitem_file_save);
 
+    //         S A V E  A S
+    Gtk::MenuItem* menuitem_file_save_as = Gtk::manage(new Gtk::MenuItem("_Save As", true));
+    menuitem_file_save_as->signal_activate().connect([this] {this->on_save_as_click();});
+    filemenu->append(*menuitem_file_save_as);
+
     //         O P E N
     Gtk::MenuItem* menuitem_file_open = Gtk::manage(new Gtk::MenuItem("_Open", true));
     menuitem_file_open->signal_activate().connect([this] {this->on_open_click();});
@@ -109,6 +114,17 @@ Mainwin::Mainwin() : shelter{new Shelter{"Mavs Animal Shelter"}} {
     Gtk::MenuItem *menuitem_listadopted2 = Gtk::manage(new Gtk::MenuItem("_List Adopted", true));
     menuitem_listadopted2->signal_activate().connect([this] {this->on_list_adopted_click();});
     clientmenu->append(*menuitem_listadopted2);
+
+    //     H E L P
+    Gtk::MenuItem* menuitem_help = Gtk::manage(new Gtk::MenuItem("_Help", true));
+    menubar->append(*menuitem_help);
+    Gtk::Menu* helpmenu = Gtk::manage(new Gtk::Menu());
+    menuitem_help->set_submenu(*helpmenu);
+
+    //           A B O U T
+    Gtk::MenuItem *menuitem_about = Gtk::manage(new Gtk::MenuItem("_About", true));
+    menuitem_about->signal_activate().connect([this] {this->on_about_click();});
+    helpmenu->append(*menuitem_about);
 
 
     // /////////////
@@ -409,7 +425,7 @@ void Mainwin::on_list_adopted_click(){
 
 void Mainwin::on_save_click(){
     try {
-        std::ofstream ofs{"untitled.mass"};
+        std::ofstream ofs{shelter->filename()};
         shelter->save(ofs);
         ofs.close();
     } catch(std::exception e) {
@@ -417,7 +433,71 @@ void Mainwin::on_save_click(){
     }
 }
 
-void Mainwin::on_open_click(){
+void Mainwin::on_save_as_click(){
+    Gtk::FileChooserDialog dialog("Please choose a file",
+        Gtk::FileChooserAction::FILE_CHOOSER_ACTION_SAVE);
+    dialog.set_transient_for(*this);
+
+    auto filter_ctp = Gtk::FileFilter::create();
+    filter_ctp->set_name("mass");
+    filter_ctp->add_pattern("*.mass");
+    dialog.add_filter(filter_ctp);
+
+    auto filter_any = Gtk::FileFilter::create();
+    filter_any->set_name("Any files");
+    filter_any->add_pattern("*");
+    dialog.add_filter(filter_any);
+
+    dialog.set_filename("untitled.mass");
+
+    //Add response buttons the the dialog:
+    dialog.add_button("_Cancel", 0);
+    dialog.add_button("_Save", 1);
+
+    int result = dialog.run();
+
+    if (result == 1) {
+        shelter->set_filename(dialog.get_filename());
+        on_save_click();
+    }
+}
+
+void Mainwin::on_open_click() {
+    if(!all_data_saved()) return;
+
+    Gtk::FileChooserDialog dialog("Please choose a file",
+          Gtk::FileChooserAction::FILE_CHOOSER_ACTION_OPEN);
+    dialog.set_transient_for(*this);
+
+    auto filter_ctp = Gtk::FileFilter::create();
+    filter_ctp->set_name("mass");
+    filter_ctp->add_pattern("*.mass");
+    dialog.add_filter(filter_ctp);
+ 
+    auto filter_any = Gtk::FileFilter::create();
+    filter_any->set_name("Any files");
+    filter_any->add_pattern("*");
+    dialog.add_filter(filter_any);
+
+    dialog.set_filename("untitled.mass");
+
+    //Add response buttons the the dialog:
+    dialog.add_button("_Cancel", 0);
+    dialog.add_button("_Open", 1);
+
+    int result = dialog.run();
+
+    if (result == 1) {
+        try {
+            std::ifstream ifs{dialog.get_filename()};
+            Shelter* old = shelter;
+            shelter = new Shelter(ifs);
+            delete old;
+        } catch (std::exception& e) {
+            Gtk::MessageDialog{*this, "Unable to open shelter", false, Gtk::MESSAGE_ERROR}.run();
+        }
+    }
+    /*
     std::ifstream ifs{"untitled.mass"};
     if(ifs){
         try {
@@ -433,6 +513,7 @@ void Mainwin::on_open_click(){
     } else {
         Gtk::MessageDialog{*this, "Error: Could not open file", false, Gtk::MESSAGE_ERROR}.run();
     }
+    */
 }
 
 void Mainwin::on_new_shelter_click(){
@@ -475,4 +556,31 @@ void Mainwin::on_test_click(){
 
 void Mainwin::status(std::string s) {
     msg->set_text(s);
+}
+
+bool Mainwin::all_data_saved() {
+  if (shelter->saved()) return true;
+  Gtk::MessageDialog dialog{*this, "Unsaved data will be lost", false, 
+                            Gtk::MESSAGE_WARNING, Gtk::BUTTONS_NONE};
+  dialog.add_button("Save", 1);
+  dialog.add_button("Discard", 2);
+  dialog.add_button("Cancel", 3);
+  int response = dialog.run();
+  if (response == 1) {        // Save
+    try {
+        on_save_as_click();
+        return true; // save was successful
+    } catch(std::exception& e) {
+        Gtk::MessageDialog{*this, "Unable to save data", false, Gtk::MESSAGE_ERROR}.run();
+        return false;
+    }
+  } else if (response == 2) { // Discard
+    Shelter* old = shelter;
+    shelter = new Shelter{"Mavs Animal Shelter"};
+    delete old;
+
+    return true;
+  } else {                    // Cancel
+    return false;
+  }
 }
