@@ -521,6 +521,21 @@ void Mainwin::on_new_shelter_click(){
     shelter = new Shelter("Mavs Animal Shelter");
 }
 
+void Mainwin::on_about_click() {
+    Gtk::AboutDialog* about = Gtk::manage(new Gtk::AboutDialog());
+    about->set_deletable(true);
+
+    about->set_program_name("Mav's Animal Shelter Software");
+    about->set_version("1");
+    about->set_copyright("Copyright 2019 by Cole Montgomery");
+    about->set_license("Licensed under the Gnu General Public License 3.0\nhttps://www.gnu.org/licenses/gpl-3.0.en.html");
+
+    int value = about->run();
+    if(value == Gtk::RESPONSE_DELETE_EVENT){
+        delete about;
+    }
+}
+
 #ifdef __DEBUG
 void Mainwin::on_test_click(){
     //shelter->add_animal()
